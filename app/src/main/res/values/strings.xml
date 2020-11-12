@@ -1,0 +1,107 @@
+<resources>
+    <string name="app_name">Facon</string>
+
+    <string name="loading">CARREGANDO...</string>
+
+    <!-- Tela Login -->
+    <string name="btn_login">Entrar</string>
+    <string name="lbl_resetSenha"><u>Esqueci minha senha</u></string>
+    <string name="lbl_cadastrar">Cadastrar-se</string>
+    <string name="btn_lembrarSenha">Lembrar de mim</string>
+
+    <!-- Tela Recuperar Senha -->
+    <string name="lbl_ResetSenha">Recuperação de senha</string>
+    <string name="lbl_inserirEmail">Insira abaixo o endereço de E-mail cadastrado </string>
+    <string name="lbl_senhaTemporaria">Um e-mail será enviado com uma \n senha temporária</string>
+    <string name="btn_enviar">Enviar</string>
+
+    <!-- Tela escolha CrudUser -->
+    <string name="lbl_escolhaCliente">SOU CLIENTE \n e busco serviços</string>
+    <string name="lbl_escolhaProfissional">SOU PROFISSIONAL \n e busco clientes</string>
+
+    <!--Tela cadastro-->
+    <string name="lbl_cadastro">CADASTRO</string>
+    <string name="lbl_informeDados">Informe seus dados pessoais</string>
+    <string name="txt_nome">NOME COMPLETO</string>
+    <string name="txt_email">E-MAIL</string>
+    <string name="txt_numeroCell">TELEFONE CELULAR</string>
+    <string name="txt_numeroFixo">TELEFONE FIXO (opcional)</string>
+    <string name="txt_cpf">CPF</string>
+    <string name="txt_rg">RG</string>
+    <string name="txt_dtNascimento">Data de Nascimento</string>
+    <string name="txt_senha">SENHA</string>
+    <string name="txt_senhaConf">CONFIRMAR SENHA</string>
+    <string name="check_concordo">Li e concordo com os <u>Termos e Condições</u></string>
+    <string name="btn_cadCadastrar">CADASTRAR</string>
+
+    <!--Row Services List-->
+    <string name="lbl_profissao">Profissão, </string>
+    <string name="lbl_nomeProfissionnal">Nome Profissional</string>
+    <string name="lbl_detalhes">Ver mais...</string>
+    <string name="lbl_experiencia">Agora informe desde quando você atua nessa função:</string>
+    <string name="lbl_semProDaCateg">OPS... Infelizmente ainda não temos nenhum profissional dessa categoria cadastrado em nossa base de dados.</string>
+
+    <!--Completar Cadastro-->
+    <string name="lbl_completarCad">Complete seu cadastro</string>
+    <string name="lbl_endereco">Informe seu endereço residencial</string>
+    <string name="txt_cep">CEP</string>
+    <string name="txt_rua">RUA</string>
+    <string name="txt_num">Nº e complemento</string>
+    <string name="txt_cidade">CIDADE</string>
+    <string name="txt_bairro">BAIRRO</string>
+    <string name="txt_estado">UF</string>
+    <string name="btn_attCad">PROSSEGUIR</string>
+
+    <!--Escolha categoria de atuação-->
+    <string name="lbl_escolhaCategoriaAtuacao">Informe sua área de atuação</string>
+    <string name="btn_escolher">ESCOLHER</string>
+    <string name="lbl_construcao">Construção e Reparos</string>
+    <string name="lbl_servicosDomesticos">Serviços Domésticos</string>
+    <string name="lbl_assistenciaTec">Assistência Técnica</string>
+    <string name="lbl_eventos">Eventos</string>
+    <string name="lbl_moda">Moda e Beleza</string>
+    <string name="lbl_tecnologia">Tecnologia e Design</string>
+    <string name="lbl_aulas">Aulas</string>
+    <string name="lbl_consultoria">Consultoria</string>
+    <string name="lbl_saude">Saúde</string>
+    <string name="lbl_veiculos">Veículos</string>
+    <string name="lbl_escolhaServicoPrestado">Agora informe o serviço prestado de acordo com sua categoria.</string>
+    <string name="btn_continuar">CONTINUAR</string>
+    <string name="ex_anosMeses">(mês/ano)</string>
+
+    <!--Home Cliente-->
+    <string name="lbl_escolhaCateg">Escolha a categoria do serviço que deseja contratar para ver todos os profissionais da área</string>
+
+    <!--Menu de filtro ListServices-->
+    <string name="filter_melhorAv">Melhor Avaliação</string>
+    <string name="filter_maiorExp">Maior Experiência</string>
+    <string name="filter_alfabetico">Nomes de A-Z</string>
+    <string name="filter_distancia">Mais próximos</string>
+
+    <!--DetailsProfissional-->
+    <string name="lbl_fotosServicosConcluidos">Fotos de serviços concluídos</string>
+    <string name="btn_negociar">NEGOCIAR</string>
+    <string name="title_activity_home">Home</string>
+
+    <!-- TABS -->
+    <string name="tab_home">HOME</string>
+    <string name="tab_infos_pessoais">Infos Pessoais</string>
+    <string name="tab_perfil_pro">Profissional</string>
+
+    <!-- Home Profissional -->
+    <string name="lbl_criar_perfil_pro">Você ainda não possui um perfil de profissional.\nDeseja criar um agora ?</string>
+    <string name="sua_avaliacao">Sua avaliação:</string>
+    <string name="lbl_editar"><u>EDITAR</u></string>
+    <string name="lbl_salvar"><u>SALVAR</u></string>
+    <!-- Alert Dialog Formacao Profissional -->
+    <string name="alert_formacao_title">Informe o nível, instituição, data de início e data de conclusão</string>
+    <string name="alert_formacao_hint_instituicao">Instituição</string>
+    <string name="alert_formacao_hint_curso">Curso</string>
+    <string name="alert_formacao_hint_inicio">Início (mês/ano)</string>
+    <string name="alert_formacao_hint_conclusao">Conclusão (mês/ano)</string>
+
+    <!-- Infos Pessoais -->
+    <string name="lbl_enderecoAtual">ENDEREÇO</string>
+
+</resources>
+

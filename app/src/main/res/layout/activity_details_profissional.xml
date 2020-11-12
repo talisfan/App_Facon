@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    android:padding="10dp"
+    tools:context=".view.cliente.DetailsProfissional">
+
+    <ImageView
+        android:id="@+id/fotoProfissional"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="#003F5184"
+        android:src="@drawable/add_foto" />
+
+    <TextView
+        android:id="@+id/lblNomePro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/fotoProfissional"
+        android:text="NOME COMPLETO"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/avPro"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/lblNomePro"
+        android:layout_alignStart="@+id/lblNomePro"
+        android:paddingTop="4dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/stars_five" />
+
+    <TextView
+        android:id="@+id/lblQntAv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/avPro"
+        android:layout_alignBottom="@+id/avPro"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@id/avPro"
+        android:gravity="center_vertical"
+        android:text="qntAv"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/lblExpPro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/avPro"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/fotoProfissional"
+        android:text="experiencia"
+        android:textSize="15sp" />
+
+    <!--########-->
+
+    <TextView
+        android:id="@+id/lblIdade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fotoProfissional"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="19dp"
+        android:text="Idade: "
+        android:textSize="19sp" />
+
+    <TextView
+        android:id="@+id/lblCategPro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblIdade"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="7dp"
+        android:text="Categoria:"
+        android:textSize="19sp" />
+
+    <TextView
+        android:id="@+id/lblServPro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblCategPro"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="7dp"
+        android:text="Serviço Prestado:"
+        android:textSize="19sp" />
+
+    <TextView
+        android:id="@+id/lblCidade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblServPro"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="7dp"
+        android:text="De Carapicuíba/SP"
+        android:textSize="19sp" />
+
+    <EditText
+        android:id="@+id/txtDescricao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblCidade"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/border_black_back_gray"
+        android:enabled="false"
+        android:padding="3dp"
+        android:text="Eu sou um cara muito sikndsfklnsflndsadjshiuasdhia"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/lblformacao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Formação"
+        android:textStyle="bold"
+        android:layout_below="@+id/txtDescricao"
+        android:textSize="15sp"
+        android:layout_marginTop="12dp"/>
+
+    <EditText
+        android:id="@+id/txtFormacao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblformacao"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/border_black_back_gray"
+        android:enabled="false"
+        android:padding="3dp"
+        android:text="Formação: Alguma coisa - SENAI - 2009"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/lblFotosServ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtFormacao"
+        android:layout_marginTop="12dp"
+        android:text="@string/lbl_fotosServicosConcluidos"
+        android:textSize="19sp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/v"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/lblFotosServ"
+        android:layout_marginTop="10dp"
+        android:foreground="@color/black" />
+
+    <View
+        android:id="@+id/vi2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/v"
+        android:layout_marginTop="100dp"
+        android:foreground="@color/black" />
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vi2"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:background="@color/orange"
+        android:text="@string/btn_negociar" />
+
+</RelativeLayout>

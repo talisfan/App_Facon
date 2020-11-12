@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.fragments.FragmentHome">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray"
+        android:padding="13dp"
+        tools:context=".view.cliente.HomeCliente">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblEscolhaCateg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_escolhaCateg"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/txtPesquisaServico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:background="@drawable/border_rounded_horizontal"
+                android:hint="Ou busque aqui o serviço desejado"
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="2dp"
+                android:textSize="18sp"
+                android:imeOptions="actionSearch"
+                android:inputType="textAutoComplete"
+                android:maxLines="1"
+                android:lines="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lblEscolhaCateg" />
+
+            <ImageView
+                android:id="@+id/imgPesquisaServ"
+                android:layout_width="40dp"
+                android:layout_height="0dp"
+                android:src="@drawable/lupa2"
+                app:layout_constraintBottom_toBottomOf="@+id/txtPesquisaServico"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txtPesquisaServico" />
+
+            <ImageView
+                android:id="@+id/imgConstrucao"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="38dp"
+                android:src="@drawable/ic_ferramenta"
+                android:background="@color/darkGray"
+                android:foreground="@drawable/border_circle_gray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imgPesquisaServ" />
+
+            <TextView
+                android:id="@+id/lblConstrucao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_construcao"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgConstrucao"
+                app:layout_constraintStart_toEndOf="@+id/imgConstrucao"
+                app:layout_constraintTop_toTopOf="@+id/imgConstrucao" />
+
+            <Button
+                android:id="@+id/btnConstrucao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgConstrucao"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgConstrucao"
+                />
+
+            <ImageView
+                android:id="@+id/imgServDomestico"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_carrinho_bebe"
+                android:background="@color/darkGray"
+                android:foreground="@drawable/border_circle_gray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgConstrucao" />
+
+            <TextView
+                android:id="@+id/lblServDomestico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_servicosDomesticos"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgServDomestico"
+                app:layout_constraintStart_toEndOf="@+id/imgServDomestico"
+                app:layout_constraintTop_toTopOf="@+id/imgServDomestico" />
+
+            <Button
+                android:id="@+id/btnServDomestico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgServDomestico"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgServDomestico"
+                />
+
+            <ImageView
+                android:id="@+id/imgAssisTec"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_assist_tec"
+                android:background="@color/darkGray"
+                android:foreground="@drawable/border_circle_gray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgServDomestico" />
+
+            <TextView
+                android:id="@+id/lblAssisTec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_assistenciaTec"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAssisTec"
+                app:layout_constraintStart_toEndOf="@+id/imgAssisTec"
+                app:layout_constraintTop_toTopOf="@+id/imgAssisTec" />
+
+            <Button
+                android:id="@+id/btnAssisTec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAssisTec"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgAssisTec"
+                />
+
+            <ImageView
+                android:id="@+id/imgEventos"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_camera"
+                android:background="@color/darkGray"
+                android:foreground="@drawable/border_circle_gray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgAssisTec" />
+
+            <TextView
+                android:id="@+id/lblEventos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_eventos"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgEventos"
+                app:layout_constraintStart_toEndOf="@+id/imgEventos"
+                app:layout_constraintTop_toTopOf="@+id/imgEventos" />
+
+            <Button
+                android:id="@+id/btnEventos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgEventos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgEventos"
+                />
+
+            <ImageView
+                android:id="@+id/imgModa"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_etiqueta"
+                android:background="@color/darkGray"
+                android:foreground="@drawable/border_circle_gray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgEventos" />
+
+            <TextView
+                android:id="@+id/lblModa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_moda"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgModa"
+                app:layout_constraintStart_toEndOf="@+id/imgModa"
+                app:layout_constraintTop_toTopOf="@+id/imgModa" />
+
+            <Button
+                android:id="@+id/btnModa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgModa"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgModa"
+                />
+
+            <ImageView
+                android:id="@+id/imgTecnologia"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_computer"
+                android:foreground="@drawable/border_circle_gray"
+                android:background="@color/darkGray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgModa" />
+
+            <TextView
+                android:id="@+id/lblTecnologia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_tecnologia"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgTecnologia"
+                app:layout_constraintStart_toEndOf="@+id/imgTecnologia"
+                app:layout_constraintTop_toTopOf="@+id/imgTecnologia" />
+
+            <Button
+                android:id="@+id/btnTecnologia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgTecnologia"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgTecnologia"
+                />
+
+            <ImageView
+                android:id="@+id/imgAulas"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_book"
+                android:foreground="@drawable/border_circle_gray"
+                android:background="@color/darkGray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgTecnologia" />
+
+            <TextView
+                android:id="@+id/lblAulas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_aulas"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAulas"
+                app:layout_constraintStart_toEndOf="@+id/imgAulas"
+                app:layout_constraintTop_toTopOf="@+id/imgAulas" />
+
+            <Button
+                android:id="@+id/btnAulas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAulas"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgAulas"
+                />
+
+            <ImageView
+                android:id="@+id/imgConsultoria"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_consultoria"
+                android:foreground="@drawable/border_circle_gray"
+                android:background="@color/darkGray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgAulas" />
+
+            <TextView
+                android:id="@+id/lblConsultoria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_consultoria"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgConsultoria"
+                app:layout_constraintStart_toEndOf="@+id/imgConsultoria"
+                app:layout_constraintTop_toTopOf="@+id/imgConsultoria" />
+
+            <Button
+                android:id="@+id/btnConsultoria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgConsultoria"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgConsultoria"
+                />
+
+            <ImageView
+                android:id="@+id/imgSaude"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_spa"
+                android:foreground="@drawable/border_circle_gray"
+                android:background="@color/darkGray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgConsultoria" />
+
+            <TextView
+                android:id="@+id/lblSaude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_saude"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgSaude"
+                app:layout_constraintStart_toEndOf="@+id/imgSaude"
+                app:layout_constraintTop_toTopOf="@+id/imgSaude" />
+
+            <Button
+                android:id="@+id/btnSaude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgSaude"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgSaude"
+                />
+
+            <ImageView
+                android:id="@+id/imgVeiculos"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_car"
+                android:foreground="@drawable/border_circle_gray"
+                android:background="@color/darkGray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgSaude" />
+
+            <TextView
+                android:id="@+id/lblVeiculos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/lbl_veiculos"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgVeiculos"
+                app:layout_constraintStart_toEndOf="@+id/imgVeiculos"
+                app:layout_constraintTop_toTopOf="@+id/imgVeiculos" />
+
+            <Button
+                android:id="@+id/btnVeiculos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_escolher"
+                app:layout_constraintBottom_toBottomOf="@+id/imgVeiculos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgVeiculos"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</FrameLayout>

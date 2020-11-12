@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.profissional.EscolhaServicoPrestado"
+    android:padding="13dp">
+
+    <TextView
+        android:id="@+id/lblEscolhaServico"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lbl_escolhaServicoPrestado"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txtPesquisaServicoPrestado"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/border_rounded_horizontal"
+        android:hint="Buscar Serviço"
+        android:imeOptions="actionSearch"
+        android:inputType="textAutoComplete"
+        android:maxLines="1"
+        android:lines="1"
+        android:paddingLeft="10dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblEscolhaServico" />
+
+    <ImageView
+        android:id="@+id/imgPesquisaServPrestado"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:src="@drawable/lupa2"
+        android:onClick="pesquisarServico"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/txtPesquisaServicoPrestado"
+        app:layout_constraintTop_toTopOf="@+id/txtPesquisaServicoPrestado" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPesquisaServPrestados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPesquisaServicoPrestado"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp"
+        android:visibility="visible"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/lblTempoExperiencia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textSize="19sp"
+        android:text="@string/lbl_experiencia"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/txtPesquisaServicoPrestado"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/lblExemplo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="15sp"
+        android:text="@string/ex_anosMeses"
+        android:textColor="@color/darkGray"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblTempoExperiencia" />
+
+
+    <EditText
+        android:id="@+id/txtTempoExp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:inputType="number"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/lblExemplo"
+        app:layout_constraintEnd_toStartOf="@+id/lblExemplo"
+        tools:layout_editor_absoluteX="63dp" />
+
+    <Button
+        android:id="@+id/btnEnviarExp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_enviar"
+        android:onClick="enviarExp"
+        android:visibility="gone"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTempoExp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@+id/txtTempoExp"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

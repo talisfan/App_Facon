@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.TelaCadastro">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_cadastro"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/lbl_informeDados"
+            android:textAlignment="center"
+            android:textColor="@color/links"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/links" />
+
+
+        <EditText
+            android:id="@+id/cadTxtNome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:hint="@string/txt_nome"
+            android:importantForAutofill="no"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/cadTxtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/txt_email"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/cadTxtTelCell"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/txt_numeroCell"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:digits="1234567890"
+            android:maxLength="15" />
+
+        <EditText
+            android:id="@+id/cadTxtTelFixo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/txt_numeroFixo"
+            android:importantForAutofill="no"
+            android:digits="1234567890"
+            android:inputType="number"
+            android:maxLength="14" />
+
+        <EditText
+            android:id="@+id/cadTxtCpf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/txt_cpf"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:digits="1234567890"
+            android:maxLength="15" />
+
+        <EditText
+            android:id="@+id/cadTxtRg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/txt_rg"
+            android:digits="1234567890Xx"
+            android:importantForAutofill="no"
+            android:inputType="textVisiblePassword"
+            android:maxLength="12" />
+
+        <EditText
+            android:id="@+id/cadTxtDtNascimento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/txt_dtNascimento"
+            android:importantForAutofill="no"
+            android:digits="1234567890"
+            android:inputType="number"
+            android:maxLength="10" />
+
+        <EditText
+            android:id="@+id/cadTxtSenha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/txt_senha"
+            android:importantForAutofill="no"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/cadTxtSenhaConf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/txt_senhaConf"
+            android:importantForAutofill="no"
+            android:inputType="textPassword" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/cadCheckConcordo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/check_concordo"
+                android:textColor="@color/links"/>
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:onClick="clickAbrirTermos"
+                android:layout_alignEnd="@+id/cadCheckConcordo"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon" />
+
+        </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/btn_cadCadastrar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:onClick="clickCadastroValidar"
+            android:text="@string/btn_cadCadastrar" />
+
+    </LinearLayout>
+</ScrollView>
+

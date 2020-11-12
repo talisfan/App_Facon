@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/menu_filter"
+        android:checkableBehavior="single">
+        <item android:id="@+id/filter_melhorAv"
+            android:checked="true"
+            android:title="@string/filter_melhorAv"/>
+        <item android:id="@+id/filter_maiorExp"
+            android:title="@string/filter_maiorExp"/>
+        <item android:id="@+id/filter_alfabetico"
+            android:title="@string/filter_alfabetico"/>
+        <item android:id="@+id/filter_distancia"
+            android:title="@string/filter_distancia"/>
+    </group>
+
+</menu>
