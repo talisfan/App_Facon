@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiDb {
     private static Retrofit getRetrofitClient(){
         return new Retrofit.Builder()
-                .baseUrl("http://192.168.0.103:3000") //link sem / no final
+                .baseUrl("http://192.168.0.109:3000") //link sem / no final
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }

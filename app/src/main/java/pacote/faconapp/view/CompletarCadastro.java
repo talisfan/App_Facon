@@ -2,14 +2,25 @@ package pacote.faconapp.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import java.io.IOException;
 
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
@@ -38,6 +49,7 @@ public class CompletarCadastro extends AppCompatActivity {
     private Context context;
     private CrudUser crudUser;
     private Intent it;
+    private Uri mSelectedUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +70,8 @@ public class CompletarCadastro extends AppCompatActivity {
         mViewHolder.txtBairro = findViewById(R.id.txtBairro);
         mViewHolder.txtCidade = findViewById(R.id.txtCidade);
         mViewHolder.txtEstado = findViewById(R.id.txtEstado);
+        mViewHolder.foto = findViewById(R.id.addFoto);
+
         //criando mask
         Mascaras maskCep = new Mascaras("#####-###", mViewHolder.txtCep);
         //implementando a mask no EditText
@@ -69,9 +83,76 @@ public class CompletarCadastro extends AppCompatActivity {
         alertD.show();
     }
 
-    public void buscaCep(View v){
+    public void selectPhoto(View v) {
         try {
-            if(mViewHolder.txtCep.getText().length() == 9) {
+
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View vDialog = inflater.inflate(R.layout.dialog_add_foto, null);
+
+            ImageView openCam = vDialog.findViewById(R.id.openCam);
+            ImageView openGalery = vDialog.findViewById(R.id.openGalery);
+
+            openCam.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(takePictureIntent, 1);
+                    }
+                }
+            });
+
+            openGalery.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, 0);
+                }
+            });
+
+            alertD.setView(vDialog);
+            alertD.setTitle(null);
+            alertD.setMessage(null);
+            alertD.setPositiveButton(null, null);
+            alertD.show();
+
+        }catch (Exception ex){
+            MetodosEstaticos.toastMsg(context, ex.getMessage());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0) {
+            mSelectedUri = data.getData();
+
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mSelectedUri);
+                mViewHolder.foto.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+            } catch (IOException ex) {
+                MetodosEstaticos.toastMsg(context, "Erro ao receber foto.");
+            }
+        }
+
+        if (requestCode == 1) {
+            try {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                mViewHolder.foto.setImageBitmap(imageBitmap);
+                alertD.set
+            }catch (Exception ex) {
+                MetodosEstaticos.toastMsg(context, "Erro ao receber foto.");
+            }
+        }
+    }
+
+    public void buscaCep(View v) {
+        try {
+            if (mViewHolder.txtCep.getText().length() == 9) {
                 if (MetodosEstaticos.isConnected(context)) {
 
                     Toast.makeText(this, "Buscando cep...", Toast.LENGTH_SHORT).show();
@@ -84,9 +165,9 @@ public class CompletarCadastro extends AppCompatActivity {
                             //Sucesso na requisição (mesmo que retorno seja de erro. ex: 404)
                             Cep listEnd = response.body();
                             if (listEnd != null && listEnd.getEndRua() != null) {
-                                MetodosEstaticos.toastMsg(context,"Pronto !");
+                                MetodosEstaticos.toastMsg(context, "Pronto !");
                             } else {
-                                MetodosEstaticos.toastMsg(context,"Cep não encontrado !");
+                                MetodosEstaticos.toastMsg(context, "Cep não encontrado !");
                             }
                             mViewHolder.txtRua.setText(listEnd.getEndRua());
                             mViewHolder.txtCidade.setText(listEnd.getEndCidade());
@@ -105,10 +186,10 @@ public class CompletarCadastro extends AppCompatActivity {
                 } else {
                     MetodosEstaticos.toastMsg(context, ExceptionsServer.NO_CONNECTION);
                 }
-            }else{
+            } else {
                 MetodosEstaticos.toastMsg(context, "Informe um cep válido !");
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             alertD.setTitle("ERRO:");
             alertD.setMessage(ex.getMessage());
             alertD.show();
@@ -160,7 +241,7 @@ public class CompletarCadastro extends AppCompatActivity {
                                     finish();
                                 }
                             }, delay);
-                        }catch (Exception ex){
+                        } catch (Exception ex) {
                             alertD.setTitle("Error");
                             alertD.setMessage(ex.getMessage());
                             alertD.setPositiveButton("OK", null);
@@ -194,6 +275,7 @@ public class CompletarCadastro extends AppCompatActivity {
         private EditText txtBairro;
         private EditText txtEstado;
         private EditText txtNum;
+        private ImageView foto;
     }
 }
 
