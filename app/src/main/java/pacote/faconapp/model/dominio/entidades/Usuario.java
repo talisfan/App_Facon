@@ -1,5 +1,6 @@
 package pacote.faconapp.model.dominio.entidades;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 import com.google.gson.annotations.SerializedName;
@@ -37,7 +38,7 @@ public abstract class Usuario implements Serializable {
     @SerializedName("telFixo")
     private String telFixo;
     @SerializedName("foto")
-    private Drawable foto;
+    private Bitmap foto;
     @SerializedName("ativo")
     private int ativo;
     private String senha;
@@ -143,10 +144,10 @@ public abstract class Usuario implements Serializable {
         this.ativo = ativo;
     }
 
-    public Drawable getFoto() {
+    public Bitmap getFoto() {
         return foto;
     }
-    public void setFoto(Drawable foto) {
+    public void setFoto(Bitmap foto) {
         this.foto = foto;
     }
 

@@ -3,8 +3,8 @@ package pacote.faconapp.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,12 +15,25 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import java.io.IOException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayInputStream;
+import java.util.UUID;
 
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
@@ -35,6 +48,8 @@ import pacote.faconapp.model.dominio.crud.CrudUser;
 import pacote.faconapp.model.dominio.crud.ServiceCep;
 import pacote.faconapp.model.dominio.entidades.Cep;
 import pacote.faconapp.model.dominio.entidades.Cliente;
+import pacote.faconapp.model.dominio.entidades.UserFireBase;
+import pacote.faconapp.model.dominio.entidades.Usuario;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +65,7 @@ public class CompletarCadastro extends AppCompatActivity {
     private CrudUser crudUser;
     private Intent it;
     private Uri mSelectedUri;
+    private boolean isFotoSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +79,8 @@ public class CompletarCadastro extends AppCompatActivity {
         alertD = new AlertDialog.Builder(context);
         crudUser = ApiDb.createService(CrudUser.class);
         user = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
+        FirebaseApp.initializeApp(context);
+        user = new Cliente();
 
         mViewHolder.txtCep = findViewById(R.id.txtCep);
         mViewHolder.txtRua = findViewById(R.id.txtRua);
@@ -83,9 +101,29 @@ public class CompletarCadastro extends AppCompatActivity {
         alertD.show();
     }
 
+
+    public static ImageView convertBlobToImage(Context c, byte[] bytes) {
+
+        try { // Tenta converter o blob em uma imagem
+            //alimenta a imageStream com o que tem no bytes
+            ByteArrayInputStream imageStream = new ByteArrayInputStream(bytes);
+
+            //seta no bmp o stream carregado na linha de cima
+            Bitmap bmp = BitmapFactory.decodeStream(imageStream);
+
+            ImageView img = new ImageView(c);
+            img.setImageBitmap(bmp); // aqui seta a imagem no imageview
+
+            return img; // retorna a imagem
+        } catch (Exception ex) {
+            MetodosEstaticos.toastMsg(c, "Erro ao converter o arquivo binário para imagem. " + ex.getLocalizedMessage());
+            return new ImageView(c); // Retorna a imagem do jeito que está
+        }
+    }
+
+
     public void selectPhoto(View v) {
         try {
-
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View vDialog = inflater.inflate(R.layout.dialog_add_foto, null);
 
@@ -114,10 +152,10 @@ public class CompletarCadastro extends AppCompatActivity {
             alertD.setView(vDialog);
             alertD.setTitle(null);
             alertD.setMessage(null);
-            alertD.setPositiveButton(null, null);
+            alertD.setPositiveButton("OK", null);
             alertD.show();
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             MetodosEstaticos.toastMsg(context, ex.getMessage());
         }
     }
@@ -126,26 +164,33 @@ public class CompletarCadastro extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 0) {
-            mSelectedUri = data.getData();
+        mSelectedUri = data.getData();
 
+        // Foto da galeria
+        if (requestCode == 0) {
             Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mSelectedUri);
                 mViewHolder.foto.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
-            } catch (IOException ex) {
-                MetodosEstaticos.toastMsg(context, "Erro ao receber foto.");
+                user.setFoto(bitmap);
+                isFotoSelected = true;
+            } catch (Exception ex) {
+                MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Erro ao setar foto.");
+                isFotoSelected = false;
             }
         }
 
+        // Foto da camera
         if (requestCode == 1) {
             try {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 mViewHolder.foto.setImageBitmap(imageBitmap);
-                alertD.set
-            }catch (Exception ex) {
-                MetodosEstaticos.toastMsg(context, "Erro ao receber foto.");
+                user.setFoto(imageBitmap);
+                isFotoSelected = true;
+            } catch (Exception ex) {
+                MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Erro ao setar foto.");
+                isFotoSelected = false;
             }
         }
     }
@@ -198,65 +243,51 @@ public class CompletarCadastro extends AppCompatActivity {
 
     public void completarCadastro(View v) {
         try {
-
-            user.setEnderecoCidade(mViewHolder.txtCidade.getText().toString());
-            user.setEndCep(mViewHolder.txtCep.getText().toString().replace("-", ""));
-            user.setEnderecoBairro(mViewHolder.txtBairro.getText().toString());
-            user.setEnderecoNum(mViewHolder.txtNum.getText().toString());
-            user.setEnderecoEstado(mViewHolder.txtEstado.getText().toString());
-            user.setEnderecoRua(mViewHolder.txtRua.getText().toString());
-
-            ValidarCompletarCad validar = new ValidarCompletarCad();
-            if (validar.validarCompletarCad(user, context)) {
-
-                Call<Cliente> call = crudUser.completCad(user);
-                //enqueue aguarda a resposta sem travar user
-                call.enqueue(new Callback<Cliente>() {
-                    @Override
-                    public void onResponse(Call<Cliente> call, Response<Cliente> response) {
-                        try {
-                            Cliente u = response.body();
-
-                            if (u.error != null && u.error.equals("true")) {
-                                throw new Exception(u.msg);
-                            }
-
-                            alertD.setTitle("TUDO OK !");
-                            alertD.setMessage("Carregando...");
-                            alertD.setPositiveButton(null, null);
-                            alertD.show();
-
-                            it = new Intent(context, EscolhaUser.class);
-                            it.putExtra(ClassesConstants.CLIENTE, user);
-
-                            Handler handler = new Handler();
-                            long delay = 2000;
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    startActivity(it);
-                                }
-                            }, delay);
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    finish();
-                                }
-                            }, delay);
-                        } catch (Exception ex) {
-                            alertD.setTitle("Error");
-                            alertD.setMessage(ex.getMessage());
-                            alertD.setPositiveButton("OK", null);
-                            alertD.show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Cliente> call, Throwable t) {
-                        MetodosEstaticos.testConnectionFailed(t, context);
-                    }
-                });
+            if (!isFotoSelected) {
+                throw new Exception("É necessário inserir uma foto para indentificação.");
             }
-        } catch (Exception ex) {
+            user.setEmail("talis@talis.com");
+            user.setSenha("e10adc3949ba59abbe56e057f20f883e");
+            createUserFb();
 
+//            user.setEnderecoCidade(mViewHolder.txtCidade.getText().toString());
+//            user.setEndCep(mViewHolder.txtCep.getText().toString().replace("-", ""));
+//            user.setEnderecoBairro(mViewHolder.txtBairro.getText().toString());
+//            user.setEnderecoNum(mViewHolder.txtNum.getText().toString());
+//            user.setEnderecoEstado(mViewHolder.txtEstado.getText().toString());
+//            user.setEnderecoRua(mViewHolder.txtRua.getText().toString());
+//
+//            ValidarCompletarCad validar = new ValidarCompletarCad();
+//            if (validar.validarCompletarCad(user, context)) {
+//
+//                Call<Cliente> call = crudUser.completCad(user);
+//                //enqueue aguarda a resposta sem travar user
+//                call.enqueue(new Callback<Cliente>() {
+//                    @Override
+//                    public void onResponse(Call<Cliente> call, Response<Cliente> response) {
+//                        try {
+//                            Cliente u = response.body();
+//
+//                            if (u.error != null && u.error.equals("true")) {
+//                                throw new Exception(u.msg);
+//                            }
+//                            createUserFb();
+//
+//                        } catch (Exception ex) {
+//                            alertD.setTitle("Error");
+//                            alertD.setMessage(ex.getMessage());
+//                            alertD.setPositiveButton("OK", null);
+//                            alertD.show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Cliente> call, Throwable t) {
+//                        MetodosEstaticos.testConnectionFailed(t, context);
+//                    }
+//                });
+//            }
+        } catch (Exception ex) {
             MetodosEstaticos.toastMsg(context, ex.getMessage());
 
             if (ex.getMessage().equals(ExceptionsCadastro.CEP_INVALIDO)) {
@@ -267,6 +298,177 @@ public class CompletarCadastro extends AppCompatActivity {
             }
         }
     }
+
+    private int contador = 0;
+
+    private void createUserFb() {
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.getEmail(), user.getSenha())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            contador = 0;
+                            savePhotoFb();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception ex) {
+                        while (contador <= 5) {
+                            Handler handler = new Handler();
+                            long delay = 4000;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Tentando novamente...");
+                                    contador++;
+                                    createUserFb();
+                                }
+                            }, delay);
+                        }
+                        if (contador > 5) {
+                            MetodosEstaticos.toastMsg(context, "Não foi possível salvar sua foto no nosso banco de dados. Por favor tente mais tarde.");
+                            it = new Intent(context, EscolhaUser.class);
+                            it.putExtra(ClassesConstants.CLIENTE, user);
+
+                            Handler handler = new Handler();
+                            long delay = 3000;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    startActivity(it);
+                                }
+                            }, delay);
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    finish();
+                                }
+                            }, delay);
+                        }
+                    }
+                });
+    }
+
+    private void savePhotoFb() {
+        // Save User Firebase
+        String filename = UUID.randomUUID().toString();
+        final StorageReference ref = FirebaseStorage.getInstance().getReference("/images/" + filename);
+        ref.putFile(mSelectedUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+
+                                contador = 0;
+                                String uid = FirebaseAuth.getInstance().getUid();
+                                String username = user.getEmail();
+                                String profileUrl = uri.toString();
+
+                                UserFireBase us = new UserFireBase(uid, username, profileUrl);
+
+                                FirebaseFirestore.getInstance().collection("users")
+                                        .document(uid)
+                                        .set(us)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                alertD.setTitle("TUDO OK !");
+                                                alertD.setMessage("Carregando...");
+                                                alertD.setPositiveButton(null, null);
+                                                alertD.show();
+
+                                                it = new Intent(context, EscolhaUser.class);
+                                                it.putExtra(ClassesConstants.CLIENTE, user);
+
+                                                Handler handler = new Handler();
+                                                long delay = 2000;
+                                                handler.postDelayed(new Runnable() {
+                                                    public void run() {
+                                                        startActivity(it);
+                                                    }
+                                                }, delay);
+                                                handler.postDelayed(new Runnable() {
+                                                    public void run() {
+                                                        finish();
+                                                    }
+                                                }, delay);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception ex) {
+                                                while (contador <= 5) {
+                                                    Handler handler = new Handler();
+                                                    long delay = 4000;
+                                                    handler.postDelayed(new Runnable() {
+                                                        public void run() {
+                                                            MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Tentando novamente...");
+                                                            contador++;
+                                                            savePhotoFb();
+                                                        }
+                                                    }, delay);
+                                                }
+                                                if (contador > 5) {
+                                                    MetodosEstaticos.toastMsg(context, "Não foi possível salvar sua foto no nosso banco de dados. Por favor tente mais tarde.");
+                                                    it = new Intent(context, EscolhaUser.class);
+                                                    it.putExtra(ClassesConstants.CLIENTE, user);
+
+                                                    Handler handler = new Handler();
+                                                    long delay = 3000;
+                                                    handler.postDelayed(new Runnable() {
+                                                        public void run() {
+                                                            startActivity(it);
+                                                        }
+                                                    }, delay);
+                                                    handler.postDelayed(new Runnable() {
+                                                        public void run() {
+                                                            finish();
+                                                        }
+                                                    }, delay);
+                                                }
+                                            }
+                                        });
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception ex) {
+                        while (contador <= 5) {
+                            Handler handler = new Handler();
+                            long delay = 4000;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Tentando novamente...");
+                                    contador++;
+                                    savePhotoFb();
+                                }
+                            }, delay);
+                        }
+                        if (contador > 5) {
+                            MetodosEstaticos.toastMsg(context, "Não foi possível salvar sua foto no nosso banco de dados. Por favor tente mais tarde.");
+                            it = new Intent(context, EscolhaUser.class);
+                            it.putExtra(ClassesConstants.CLIENTE, user);
+
+                            Handler handler = new Handler();
+                            long delay = 3000;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    startActivity(it);
+                                }
+                            }, delay);
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    finish();
+                                }
+                            }, delay);
+                        }
+                    }
+                });
+    }
+
 
     private static class ViewHolder {
         private EditText txtCep;

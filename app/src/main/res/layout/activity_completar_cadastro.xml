@@ -27,7 +27,7 @@
             android:layout_height="160dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:foreground="@drawable/border_rounded"
+            android:foreground="@drawable/border_circle_white"
             android:scaleType="centerCrop"
             android:onClick="selectPhoto"
             android:src="@drawable/add_foto" />
