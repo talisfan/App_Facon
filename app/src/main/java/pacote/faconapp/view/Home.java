@@ -1,6 +1,7 @@
 package pacote.faconapp.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import pacote.faconapp.R;
 import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.model.dominio.entidades.Cliente;
+import pacote.faconapp.view.chat.MessagesActivity;
 import pacote.faconapp.view.fragments.FragmentHome;
 import pacote.faconapp.view.fragments.FragmentInfosPessoais;
 import pacote.faconapp.view.fragments.FragmentPerfilPro;
@@ -56,8 +58,10 @@ public class Home extends AppCompatActivity {
             btnChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+//                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                            .setAction("Action", null).show();
+                    Intent it = new Intent(context, MessagesActivity.class);
+                    startActivity(it);
                 }
             });
 

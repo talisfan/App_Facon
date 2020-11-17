@@ -113,17 +113,17 @@ CREATE INDEX idx_profissoes ON tbl_tipoServico(id);
  
  
 ############# INSERTS ##########
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, senha, email, telCell, endCep) VALUES 
-(1, 'Gabrielle Luques', '2000-03-29', '381432402', '49677364677', 'Carapicuíba', 'SP', MD5('123456'), 'gabi@gabi.com', '11951184349', '06332190');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep) VALUES 
+(1, 'Gabrielle Luques', '2000-03-29', '381432402', '49677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'gabi@gabi.com', '11951184349', '06332190');
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, senha, email, telCell, endCep) VALUES 
-(2, 'Lucas Almeida', '2000-03-29', '381422402', '59677364677', 'Carapicuíba', 'SP', MD5('123456'), 'lucas@lucas.com', '11951184549', '06332190');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep) VALUES 
+(2, 'Lucas Almeida', '2000-03-29', '381422402', '59677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'lucas@lucas.com', '11951184549', '06332190');
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, senha, email, telCell, endCep) VALUES 
-(3, 'Talisson Luques', '2000-03-29', '383432402', '47677764677', 'Carapicuíba', 'SP', MD5('123456'), 'talis@talis.com', '11951184049', '06332190');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep) VALUES 
+(3, 'Talisson Luques', '2000-03-29', '383432402', '47677764677', 'Carapicuíba', 'SP','Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'talis@talis.com', '11951184049', '06332190');
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, senha, email, telCell, endCep) VALUES 
-(4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', MD5('123456'), 'luiz@luiz.com', '11951104549', '06332190');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep) VALUES 
+(4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'luiz@luiz.com', '11951104549', '06332190');
 
 #SELECT * from tbl_usuario;
 

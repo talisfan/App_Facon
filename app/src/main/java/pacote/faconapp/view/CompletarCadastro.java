@@ -48,8 +48,7 @@ import pacote.faconapp.model.dominio.crud.CrudUser;
 import pacote.faconapp.model.dominio.crud.ServiceCep;
 import pacote.faconapp.model.dominio.entidades.Cep;
 import pacote.faconapp.model.dominio.entidades.Cliente;
-import pacote.faconapp.model.dominio.entidades.UserFireBase;
-import pacote.faconapp.model.dominio.entidades.Usuario;
+import pacote.faconapp.model.dominio.entidades.chat.UserFireBase;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -79,8 +78,8 @@ public class CompletarCadastro extends AppCompatActivity {
         alertD = new AlertDialog.Builder(context);
         crudUser = ApiDb.createService(CrudUser.class);
         user = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
-        FirebaseApp.initializeApp(context);
-        user = new Cliente();
+//        FirebaseApp.initializeApp(context);
+//        user = new Cliente();
 
         mViewHolder.txtCep = findViewById(R.id.txtCep);
         mViewHolder.txtRua = findViewById(R.id.txtRua);
@@ -246,47 +245,67 @@ public class CompletarCadastro extends AppCompatActivity {
             if (!isFotoSelected) {
                 throw new Exception("É necessário inserir uma foto para indentificação.");
             }
-            user.setEmail("talis@talis.com");
-            user.setSenha("e10adc3949ba59abbe56e057f20f883e");
-            createUserFb();
+//            user.setEmail("talis@talis.com");
+//            user.setSenha("e10adc3949ba59abbe56e057f20f883e");
+//            createUserFb();
 
-//            user.setEnderecoCidade(mViewHolder.txtCidade.getText().toString());
-//            user.setEndCep(mViewHolder.txtCep.getText().toString().replace("-", ""));
-//            user.setEnderecoBairro(mViewHolder.txtBairro.getText().toString());
-//            user.setEnderecoNum(mViewHolder.txtNum.getText().toString());
-//            user.setEnderecoEstado(mViewHolder.txtEstado.getText().toString());
-//            user.setEnderecoRua(mViewHolder.txtRua.getText().toString());
-//
-//            ValidarCompletarCad validar = new ValidarCompletarCad();
-//            if (validar.validarCompletarCad(user, context)) {
-//
-//                Call<Cliente> call = crudUser.completCad(user);
-//                //enqueue aguarda a resposta sem travar user
-//                call.enqueue(new Callback<Cliente>() {
-//                    @Override
-//                    public void onResponse(Call<Cliente> call, Response<Cliente> response) {
-//                        try {
-//                            Cliente u = response.body();
-//
-//                            if (u.error != null && u.error.equals("true")) {
-//                                throw new Exception(u.msg);
-//                            }
-//                            createUserFb();
-//
-//                        } catch (Exception ex) {
-//                            alertD.setTitle("Error");
-//                            alertD.setMessage(ex.getMessage());
-//                            alertD.setPositiveButton("OK", null);
-//                            alertD.show();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<Cliente> call, Throwable t) {
-//                        MetodosEstaticos.testConnectionFailed(t, context);
-//                    }
-//                });
-//            }
+            user.setEnderecoCidade(mViewHolder.txtCidade.getText().toString());
+            user.setEndCep(mViewHolder.txtCep.getText().toString().replace("-", ""));
+            user.setEnderecoBairro(mViewHolder.txtBairro.getText().toString());
+            user.setEnderecoNum(mViewHolder.txtNum.getText().toString());
+            user.setEnderecoEstado(mViewHolder.txtEstado.getText().toString());
+            user.setEnderecoRua(mViewHolder.txtRua.getText().toString());
+
+            ValidarCompletarCad validar = new ValidarCompletarCad();
+            if (validar.validarCompletarCad(user, context)) {
+
+                Call<Cliente> call = crudUser.completCad(user);
+                //enqueue aguarda a resposta sem travar user
+                call.enqueue(new Callback<Cliente>() {
+                    @Override
+                    public void onResponse(Call<Cliente> call, Response<Cliente> response) {
+                        try {
+                            Cliente u = response.body();
+
+                            if (u.error != null && u.error.equals("true")) {
+                                throw new Exception(u.msg);
+                            }
+                            //createUserFb();
+                            alertD.setTitle("TUDO OK !");
+                            alertD.setMessage("Carregando...");
+                            alertD.setPositiveButton(null, null);
+                            alertD.show();
+
+                            it = new Intent(context, EscolhaUser.class);
+                            it.putExtra(ClassesConstants.CLIENTE, user);
+
+                            Handler handler = new Handler();
+                            long delay = 2000;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    startActivity(it);
+                                }
+                            }, delay);
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    finish();
+                                }
+                            }, delay);
+
+                        } catch (Exception ex) {
+                            alertD.setTitle("Error");
+                            alertD.setMessage(ex.getMessage());
+                            alertD.setPositiveButton("OK", null);
+                            alertD.show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Cliente> call, Throwable t) {
+                        MetodosEstaticos.testConnectionFailed(t, context);
+                    }
+                });
+            }
         } catch (Exception ex) {
             MetodosEstaticos.toastMsg(context, ex.getMessage());
 

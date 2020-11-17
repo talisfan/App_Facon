@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "482625910774",
+    "firebase_url": "https://faconapp-etec.firebaseio.com",
+    "project_id": "faconapp-etec",
+    "storage_bucket": "faconapp-etec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482625910774:android:bed24bee978abec670f9d7",
+        "android_client_info": {
+          "package_name": "pacote.faconapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482625910774-8ifoiuksvvp90s1ogiknneis8cbn0bfj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOVILljpQzTVbBxj_wRJ73MIMMgWUE0ao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482625910774-8ifoiuksvvp90s1ogiknneis8cbn0bfj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

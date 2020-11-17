@@ -7,6 +7,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
+        android:name=".adapter.ChatApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,17 +20,31 @@
         <activity android:name=".view.profissional.EscolhaServicoPrestado"/>
         <activity android:name=".view.profissional.EscolhaCategoriaAtuacao"/>
         <activity android:name=".view.CompletarCadastro">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity android:name=".view.cliente.ListServices"/>
         <activity android:name=".view.TelaCadastro"/>
         <activity android:name=".view.EscolhaUser"/>
         <activity android:name=".view.ResetSenha"/>
-        <activity android:name=".view.MainActivity" android:theme="@style/AppTheme.NoToolBar">
+        <activity android:name=".view.chat.MessagesActivity"/>
+        <activity android:name=".view.chat.ChatActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.chat.MessagesActivity" />
+        </activity>
+        <activity
+            android:name=".view.chat.ContactsActivity"
+            android:label="CONTATOS">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.chat.MessagesActivity" />
+        </activity>
 
+        <activity android:name=".view.MainActivity" android:theme="@style/AppTheme.NoToolBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>

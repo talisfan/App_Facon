@@ -1,4 +1,4 @@
-package pacote.faconapp.model.dominio.entidades;
+package pacote.faconapp.model.dominio.entidades.chat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
