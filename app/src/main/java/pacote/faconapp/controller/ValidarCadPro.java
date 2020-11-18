@@ -63,7 +63,7 @@ public class ValidarCadPro {
     }
 
     public boolean validarFormacao(String txtCurso, String inst, String dtInicio, String dtFim, Context context) throws Exception{
-        if(txtCurso.length() < 6){
+        if(txtCurso.length() < 5){
             throw new Exception("Curso inválido.");
         }
         if(inst.length() < 6){

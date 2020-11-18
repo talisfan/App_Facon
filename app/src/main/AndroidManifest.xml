@@ -7,7 +7,6 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
-        android:name=".adapter.ChatApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,32 +14,23 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.Home" android:theme="@style/AppTheme"/>
-        <activity android:name=".view.cliente.DetailsProfissional"/>
-        <activity android:name=".view.profissional.EscolhaServicoPrestado"/>
-        <activity android:name=".view.profissional.EscolhaCategoriaAtuacao"/>
-        <activity android:name=".view.CompletarCadastro">
-
-        </activity>
-        <activity android:name=".view.cliente.ListServices"/>
-        <activity android:name=".view.TelaCadastro"/>
-        <activity android:name=".view.EscolhaUser"/>
-        <activity android:name=".view.ResetSenha"/>
-        <activity android:name=".view.chat.MessagesActivity"/>
-        <activity android:name=".view.chat.ChatActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.chat.MessagesActivity" />
-        </activity>
+        <activity android:name=".view.Home" android:theme="@style/AppTheme" android:screenOrientation="portrait"/>
+        <activity android:name=".view.cliente.DetailsProfissional" android:screenOrientation="portrait"/>
+        <activity android:name=".view.profissional.EscolhaServicoPrestado" android:screenOrientation="portrait"/>
+        <activity android:name=".view.profissional.EscolhaCategoriaAtuacao" android:screenOrientation="portrait"/>
+        <activity android:name=".view.CompletarCadastro" android:screenOrientation="portrait" />
+        <activity android:name=".view.cliente.ListServices" android:screenOrientation="portrait"/>
+        <activity android:name=".view.TelaCadastro" android:screenOrientation="portrait"/>
+        <activity android:name=".view.EscolhaUser" android:screenOrientation="portrait"/>
+        <activity android:name=".view.ResetSenha" android:screenOrientation="portrait"/>
+        <activity android:name=".view.chat.MessagesActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".view.chat.ChatActivity" android:screenOrientation="portrait"/>
         <activity
             android:name=".view.chat.ContactsActivity"
-            android:label="CONTATOS">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.chat.MessagesActivity" />
-        </activity>
+            android:label="CONTATOS"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".view.MainActivity" android:theme="@style/AppTheme.NoToolBar">
+        <activity android:name=".view.MainActivity" android:theme="@style/AppTheme.NoToolBar" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -3,6 +3,7 @@ package pacote.faconapp.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -11,7 +12,14 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
@@ -36,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private ValidarLogin validarLogin;
     private Cliente cli;
     private CrudUser crudUser;
+    private String senha = "";
+    private String email = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,11 +93,13 @@ public class MainActivity extends AppCompatActivity {
         login();
     }
 
+    private int contador = 0;
+
     public void login() {
         try {
             mViewHolder.progressBar.setVisibility(View.VISIBLE);
-            String email = mViewHolder.txtEmail.getText().toString();
-            String senha = mViewHolder.txtSenha.getText().toString();
+            email = mViewHolder.txtEmail.getText().toString();
+            senha = mViewHolder.txtSenha.getText().toString();
 
             //verificando se checkBox está ativada ou não
             if (mViewHolder.btnLembrar.isChecked()) {
@@ -117,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                             //Convertendo data yyyy-mm-dd para dd/MM/yyyy
                             cli.setDataNascimento(MetodosEstaticos.convertDateInForBr(cli.getDataNascimento()));
+
+                            loginFb();
 
                             if (cli.getEndCep() == null) { //testando se ja houve o primeiro acesso pelo Cep
                                 it = new Intent(context, CompletarCadastro.class);
@@ -153,6 +167,33 @@ public class MainActivity extends AppCompatActivity {
             }
             MetodosEstaticos.toastMsg(context, ex.getMessage());
         }
+    }
+
+    private void loginFb(){
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, senha)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception ex) {
+                        if(contador < 5){
+                            loginFb();
+                        }else{
+                            MetodosEstaticos.toastMsg(context, "Erro ao fazer login...");
+                            Handler handler = new Handler();
+                            long delay = 3000;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    MainActivity.this.finish();
+                                }
+                            }, delay);
+                        }
+                    }
+                });
     }
 
     public void clickAbrirResetSenha(View v) {

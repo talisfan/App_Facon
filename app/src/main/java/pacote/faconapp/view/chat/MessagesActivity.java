@@ -1,5 +1,6 @@
 package pacote.faconapp.view.chat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,34 +33,34 @@ import com.xwray.groupie.ViewHolder;
 
 import java.util.List;
 
+import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
 import pacote.faconapp.adapter.ChatApplication;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
+import pacote.faconapp.view.MainActivity;
 
 public class MessagesActivity extends AppCompatActivity {
 
     private GroupAdapter adapter;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
-//        ChatApplication application = (ChatApplication) getApplication();
-
-//        getApplication().registerActivityLifecycleCallbacks(application);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
+        context = this;
 
         RecyclerView rv = findViewById(R.id.recycler_contact);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setLayoutManager(new LinearLayoutManager(context));
 
         adapter = new GroupAdapter();
         rv.setAdapter(adapter);
 
-//        verifyAuthentication();
-
-//        updateToken();
-
-        fetchLastMessage();
+        verifyAuthentication();
+        updateToken();
     }
 
     private void updateToken() {
@@ -74,8 +75,8 @@ public class MessagesActivity extends AppCompatActivity {
     }
 
     private void fetchLastMessage() {
-        //String uid = FirebaseAuth.getInstance().getUid();
-        String uid = "wEkYc9Cbs4gmrrkpSZXUOVE9GxT2"; // talisson
+        String uid = FirebaseAuth.getInstance().getUid();
+        //String uid = "wEkYc9Cbs4gmrrkpSZXUOVE9GxT2"; // talisson
         if (uid == null) return;
 
         FirebaseApp.initializeApp(this);
@@ -86,7 +87,6 @@ public class MessagesActivity extends AppCompatActivity {
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        System.out.println("########### " +  queryDocumentSnapshots);
                         List<DocumentChange> documentChanges =queryDocumentSnapshots.getDocumentChanges();
 
                         if (documentChanges != null) {
@@ -102,15 +102,13 @@ public class MessagesActivity extends AppCompatActivity {
                 });
     }
 
-//    private void verifyAuthentication() {
-//        if (FirebaseAuth.getInstance().getUid() == null) {
-//            Intent intent = new Intent(MessagesActivity.this, LoginChat.class);
-//
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//            startActivity(intent);
-//        }
-//    }
+    private void verifyAuthentication() {
+        if (FirebaseAuth.getInstance().getUid() == null) {
+            Intent intent = new Intent(MessagesActivity.this, MainActivity.class);
+            startActivity(intent);
+            this.finish();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

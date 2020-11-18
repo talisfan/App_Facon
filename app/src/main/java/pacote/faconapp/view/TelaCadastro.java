@@ -8,11 +8,19 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
+import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.constants.ExceptionsCadastro;
 import pacote.faconapp.constants.ExceptionsServer;
 import pacote.faconapp.controller.ValidarCadCli;
@@ -90,6 +98,7 @@ public class TelaCadastro extends AppCompatActivity {
         alertD.show();
     }
 
+    private int contador = 0;
     public void clickCadastroValidar(View v) {
         try {
             user = new Cliente();
@@ -115,7 +124,7 @@ public class TelaCadastro extends AppCompatActivity {
                 user.setDataNascimento(MetodosEstaticos.convertDateBrForIn(user.getDataNascimento()));
 
                 Call<Cliente> call = crudUser.registerUser(user);
-                call.enqueue(new Callback<Cliente>(){
+                call.enqueue(new Callback<Cliente>() {
                     @Override
                     public void onResponse(Call<Cliente> call, Response<Cliente> response) {
                         try {
@@ -124,8 +133,10 @@ public class TelaCadastro extends AppCompatActivity {
                                 throw new Exception(user.msg);
                             }
 
+                            createUserFb();
+
                             alertD.setTitle("CADASTRO EFETUADO COM SUCESSO !");
-                            alertD.setMessage("Um link para confirmação foi enviado no seu Email. Confirme para ter acesso a sua conta.");
+                            alertD.setMessage("Redirecionando...");
                             alertD.setNeutralButton(null, null);
                             alertD.setPositiveButton(null, null);
                             alertD.show();
@@ -144,10 +155,10 @@ public class TelaCadastro extends AppCompatActivity {
                                 }
                             }, delay);
 
-                        }catch (Exception ex){
+                        } catch (Exception ex) {
                             alertD.setTitle("Error");
                             alertD.setMessage(ex.getMessage());
-                            alertD.setNegativeButton("OK",null);
+                            alertD.setNegativeButton("OK", null);
                             alertD.show();
                         }
                     }
@@ -193,5 +204,50 @@ public class TelaCadastro extends AppCompatActivity {
             }
             MetodosEstaticos.toastMsg(context, ex.getMessage());
         }
+    }
+
+    // cadastrando user no firebase
+    private void createUserFb() {
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.getEmail(), user.getSenha())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {}
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception ex) {
+                        while (contador <= 5) {
+                            Handler handler = new Handler();
+                            long delay = 4000;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Tentando novamente...");
+                                    contador++;
+                                    createUserFb();
+                                }
+                            }, delay);
+                        }
+                        if (contador > 5) {
+                            MetodosEstaticos.toastMsg(context, "Erro FireBase. " + ex.getMessage());
+                            it = new Intent(context, MainActivity.class);
+                            it.putExtra(ClassesConstants.CLIENTE, user);
+
+                            Handler handler = new Handler();
+                            long delay = 5000;
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    startActivity(it);
+                                }
+                            }, delay);
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    finish();
+                                }
+                            }, delay);
+                        }
+                    }
+                });
     }
 }

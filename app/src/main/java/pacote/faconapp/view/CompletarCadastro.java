@@ -245,9 +245,6 @@ public class CompletarCadastro extends AppCompatActivity {
             if (!isFotoSelected) {
                 throw new Exception("É necessário inserir uma foto para indentificação.");
             }
-//            user.setEmail("talis@talis.com");
-//            user.setSenha("e10adc3949ba59abbe56e057f20f883e");
-//            createUserFb();
 
             user.setEnderecoCidade(mViewHolder.txtCidade.getText().toString());
             user.setEndCep(mViewHolder.txtCep.getText().toString().replace("-", ""));
@@ -270,27 +267,27 @@ public class CompletarCadastro extends AppCompatActivity {
                             if (u.error != null && u.error.equals("true")) {
                                 throw new Exception(u.msg);
                             }
-                            //createUserFb();
-                            alertD.setTitle("TUDO OK !");
-                            alertD.setMessage("Carregando...");
-                            alertD.setPositiveButton(null, null);
-                            alertD.show();
-
-                            it = new Intent(context, EscolhaUser.class);
-                            it.putExtra(ClassesConstants.CLIENTE, user);
-
-                            Handler handler = new Handler();
-                            long delay = 2000;
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    startActivity(it);
-                                }
-                            }, delay);
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    finish();
-                                }
-                            }, delay);
+                            savePhotoFb();
+//                            alertD.setTitle("TUDO OK !");
+//                            alertD.setMessage("Carregando...");
+//                            alertD.setPositiveButton(null, null);
+//                            alertD.show();
+//
+//                            it = new Intent(context, EscolhaUser.class);
+//                            it.putExtra(ClassesConstants.CLIENTE, user);
+//
+//                            Handler handler = new Handler();
+//                            long delay = 2000;
+//                            handler.postDelayed(new Runnable() {
+//                                public void run() {
+//                                    startActivity(it);
+//                                }
+//                            }, delay);
+//                            handler.postDelayed(new Runnable() {
+//                                public void run() {
+//                                    finish();
+//                                }
+//                            }, delay);
 
                         } catch (Exception ex) {
                             alertD.setTitle("Error");
@@ -320,53 +317,6 @@ public class CompletarCadastro extends AppCompatActivity {
 
     private int contador = 0;
 
-    private void createUserFb() {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.getEmail(), user.getSenha())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            contador = 0;
-                            savePhotoFb();
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception ex) {
-                        while (contador <= 5) {
-                            Handler handler = new Handler();
-                            long delay = 4000;
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Tentando novamente...");
-                                    contador++;
-                                    createUserFb();
-                                }
-                            }, delay);
-                        }
-                        if (contador > 5) {
-                            MetodosEstaticos.toastMsg(context, "Não foi possível salvar sua foto no nosso banco de dados. Por favor tente mais tarde.");
-                            it = new Intent(context, EscolhaUser.class);
-                            it.putExtra(ClassesConstants.CLIENTE, user);
-
-                            Handler handler = new Handler();
-                            long delay = 3000;
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    startActivity(it);
-                                }
-                            }, delay);
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    finish();
-                                }
-                            }, delay);
-                        }
-                    }
-                });
-    }
-
     private void savePhotoFb() {
         // Save User Firebase
         String filename = UUID.randomUUID().toString();
@@ -379,7 +329,6 @@ public class CompletarCadastro extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
 
-                                contador = 0;
                                 String uid = FirebaseAuth.getInstance().getUid();
                                 String username = user.getEmail();
                                 String profileUrl = uri.toString();
@@ -392,6 +341,7 @@ public class CompletarCadastro extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
+                                                alertD.setView(null);
                                                 alertD.setTitle("TUDO OK !");
                                                 alertD.setMessage("Carregando...");
                                                 alertD.setPositiveButton(null, null);

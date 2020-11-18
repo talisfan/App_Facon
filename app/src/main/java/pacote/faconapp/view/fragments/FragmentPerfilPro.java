@@ -103,10 +103,14 @@ public class FragmentPerfilPro extends Fragment {
                             mViewHolder.txtDescricao.setEnabled(true);
                             mViewHolder.lblEditDesc.setText(R.string.lbl_salvar);
                         } else {
+                            String descricao = mViewHolder.txtDescricao.getText().toString();
+                            if(MetodosEstaticos.isCampoVazio(descricao)){
+                                mViewHolder.txtDescricao.setText("Sem descrição...");
+                            }
                             MetodosEstaticos.snackMsg(view, "Carregando...");
                             mViewHolder.lblEditDesc.setText(R.string.lbl_editar);
                             mViewHolder.txtDescricao.setEnabled(false);
-                            editDescricao();
+                            editDescricao(descricao);
                         }
                     }
                 });
@@ -151,8 +155,8 @@ public class FragmentPerfilPro extends Fragment {
                                     ValidarCadPro validar = new ValidarCadPro();
 
                                     if (validar.validarFormacao(
-                                            txtInst.getText().toString(),
                                             txtCurso.getText().toString(),
+                                            txtInst.getText().toString(),
                                             txtDtInicio.getText().toString(),
                                             txtDtFim.getText().toString(),
                                             context)) {
@@ -226,8 +230,8 @@ public class FragmentPerfilPro extends Fragment {
         }
     }
 
-    private void editDescricao() {
-        Call<Cliente> call = crudPro.attDescricao(cli.getIdProfissional(), mViewHolder.txtDescricao.getText().toString());
+    private void editDescricao(String descricao) {
+        Call<Cliente> call = crudPro.attDescricao(cli.getIdProfissional(), descricao);
         call.enqueue(new Callback<Cliente>() {
             @Override
             public void onResponse(Call<Cliente> call, Response<Cliente> response) {

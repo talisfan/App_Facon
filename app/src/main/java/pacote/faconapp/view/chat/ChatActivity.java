@@ -34,13 +34,14 @@ import java.util.List;
 
 import pacote.faconapp.R;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
+import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.model.dominio.entidades.chat.Message;
 import pacote.faconapp.model.dominio.entidades.chat.UserFireBase;
 
 public class ChatActivity extends AppCompatActivity {
 
     private GroupAdapter adapter;
-    private UserFireBase user;
+    private ContatosFb user;
     private UserFireBase me;
 
     private EditText editChat;
@@ -51,9 +52,10 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
 
         user = getIntent().getExtras().getParcelable("user");
-        getSupportActionBar().setTitle(user.getUsername());
 
         RecyclerView rv = findViewById(R.id.recycler_chat);
         editChat = findViewById(R.id.edit_chat);
@@ -86,7 +88,7 @@ public class ChatActivity extends AppCompatActivity {
         if (me != null) {
 
             String fromId = me.getUuid();
-            String toId = user.getUuid();
+            String toId = user.getContato();
 
             FirebaseFirestore.getInstance().collection("/conversations")
                     .document(fromId)
@@ -116,7 +118,7 @@ public class ChatActivity extends AppCompatActivity {
         editChat.setText(null);
 
         final String fromId = FirebaseAuth.getInstance().getUid();
-        final String toId = user.getUuid();
+        final String toId = user.getContato();
         long timestamp = System.currentTimeMillis();
 
         final Message message = new Message();
@@ -133,8 +135,6 @@ public class ChatActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Log.d("Teste", documentReference.getId());
-
                             Contact contact = new Contact();
                             contact.setUuid(toId);
                             contact.setUsername(user.getUsername());
@@ -147,19 +147,6 @@ public class ChatActivity extends AppCompatActivity {
                                     .collection("contacts")
                                     .document(toId)
                                     .set(contact);
-
-//                            if (!user.isOnline()) {
-//                                Notification notification = new Notification();
-//                                notification.setFromId(message.getFromId());
-//                                notification.setToId(message.getToId());
-//                                notification.setTimestamp(message.getTimestamp());
-//                                notification.setText(message.getText());
-//                                notification.setFromName(me.getUsername());
-//
-//                                FirebaseFirestore.getInstance().collection("/notification")
-//                                        .document(user.getToken())
-//                                        .set(notification);
-//                            }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
