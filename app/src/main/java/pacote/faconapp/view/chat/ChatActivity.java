@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +33,9 @@ import com.xwray.groupie.ViewHolder;
 
 import java.util.List;
 
+import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
+import pacote.faconapp.constants.ExceptionsServer;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.model.dominio.entidades.chat.Message;
@@ -55,7 +58,16 @@ public class ChatActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
 
-        user = getIntent().getExtras().getParcelable("user");
+        try{
+            if(MetodosEstaticos.isConnected(this)){ throw new Exception(ExceptionsServer.NO_CONNECTION); }
+            MetodosEstaticos.testDateHourAutomatic(this);
+        }catch (Exception ex){
+            AlertDialog.Builder alertD = new AlertDialog.Builder(this);
+            alertD.setTitle("Erro");
+            alertD.setMessage(ex.getMessage());
+        }
+
+        user = (ContatosFb) getIntent().getExtras().getSerializable("user");
 
         RecyclerView rv = findViewById(R.id.recycler_chat);
         editChat = findViewById(R.id.edit_chat);
@@ -148,12 +160,6 @@ public class ChatActivity extends AppCompatActivity {
                                     .document(toId)
                                     .set(contact);
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e("Teste", e.getMessage(), e);
-                        }
                     });
 
             FirebaseFirestore.getInstance().collection("/conversations")
@@ -163,7 +169,6 @@ public class ChatActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Log.d("Teste", documentReference.getId());
 
                             Contact contact = new Contact();
                             contact.setUuid(toId);
@@ -177,12 +182,6 @@ public class ChatActivity extends AppCompatActivity {
                                     .collection("contacts")
                                     .document(fromId)
                                     .set(contact);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e("Teste", e.getMessage(), e);
                         }
                     });
         }

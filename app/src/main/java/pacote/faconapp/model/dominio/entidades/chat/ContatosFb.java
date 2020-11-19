@@ -3,16 +3,27 @@ package pacote.faconapp.model.dominio.entidades.chat;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ContatosFb implements Parcelable {
+import java.io.Serializable;
+
+public class ContatosFb implements Serializable {
 
     private String idUser;
     private String username;
     private String profileUrl;
+    private String photoUrl; // ambos são mesma coisa mas com finalidades diferentes
     private String contato;
+    private String lastMessage;
+    private long timestamp;
 
-    private ContatosFb() {
-
+    public String getLastMessage() {
+        return lastMessage;
     }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    private ContatosFb() { }
 
     public ContatosFb(String uuid, String username, String profileUrl, String contato) {
         this.idUser = uuid;
@@ -28,18 +39,6 @@ public class ContatosFb implements Parcelable {
         contato = in.readString();
     }
 
-    public static final Creator<ContatosFb> CREATOR = new Creator<ContatosFb>() {
-        @Override
-        public ContatosFb createFromParcel(Parcel in) {
-            return new ContatosFb(in);
-        }
-
-        @Override
-        public ContatosFb[] newArray(int size) {
-            return new ContatosFb[size];
-        }
-    };
-
     public String getIdUser() {
         return idUser;
     }
@@ -52,18 +51,23 @@ public class ContatosFb implements Parcelable {
         return profileUrl;
     }
 
+    public void setProfileUrl(String profileUrl) { this.profileUrl = profileUrl; }
+
     public String getContato() { return contato; }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(idUser);
-        dest.writeString(username);
-        dest.writeString(profileUrl);
-        dest.writeString(contato);
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

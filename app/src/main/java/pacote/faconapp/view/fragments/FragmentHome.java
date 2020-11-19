@@ -147,7 +147,7 @@ public class FragmentHome extends Fragment implements View.OnClickListener {
 
                     if (listPro.size() == 1) {
                         Cliente p = listPro.get(0);
-                        if (p.error.equals("true")) {
+                        if (p.error != null && p.error.equals("true")) {
                             if (p.msg.equals("vazio")) {
                                 alertD.setTitle("Serviço não encontrado");
                                 alertD.setMessage("Não encontramos nenhum profissional que trabalhe como " + servicoPesq + "...");

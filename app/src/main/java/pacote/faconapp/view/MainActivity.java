@@ -93,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
         login();
     }
 
-    private int contador = 0;
-
     public void login() {
         try {
             mViewHolder.progressBar.setVisibility(View.VISIBLE);
@@ -112,50 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
                 byte[] bSenha = MetodosEstaticos.gerarHash(senha);
                 senha = MetodosEstaticos.stringHexa(bSenha);
-
-                Call<Cliente> call = crudUser.login(email, senha);
-                call.enqueue(new Callback<Cliente>() {
-                    @Override
-                    public void onResponse(Call<Cliente> call, Response<Cliente> response) {
-                        //Sucesso na requisição (mesmo que retorno seja de erro. ex: 404)
-                        cli = response.body();
-
-                        try {
-
-                            if (cli.error != null && cli.error.equals("true")) {
-                                throw new Exception(cli.msg);
-                            } else if (cli.getAtivo() != 1) {
-                                throw new Exception("Usuário inativo. Verifique sua caixa de e-mail.");
-                            }
-                            //Convertendo data yyyy-mm-dd para dd/MM/yyyy
-                            cli.setDataNascimento(MetodosEstaticos.convertDateInForBr(cli.getDataNascimento()));
-
-                            loginFb();
-
-                            if (cli.getEndCep() == null) { //testando se ja houve o primeiro acesso pelo Cep
-                                it = new Intent(context, CompletarCadastro.class);
-                            } else {
-                                it = new Intent(context, Home.class);
-                            }
-
-                            it.putExtra(ClassesConstants.CLIENTE, cli);
-                            mViewHolder.progressBar.setVisibility(View.INVISIBLE);
-                            startActivity(it);
-                            MainActivity.this.finish();
-
-                        } catch (Exception ex) {
-                            mViewHolder.progressBar.setVisibility(View.INVISIBLE);
-                            MetodosEstaticos.toastMsg(context, ex.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Cliente> call, Throwable t) {
-                        //Falha na requisição
-                        MetodosEstaticos.testConnectionFailed(t, context);
-                        mViewHolder.progressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
+                loginFb();
             }
         } catch (Exception ex) {
             mViewHolder.progressBar.setVisibility(View.INVISIBLE);
@@ -174,28 +129,67 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception ex) {
-                        if(contador < 5){
-                            loginFb();
+                        if(task.isSuccessful()){
+                            loginMySql();
                         }else{
-                            MetodosEstaticos.toastMsg(context, "Erro ao fazer login...");
-                            Handler handler = new Handler();
-                            long delay = 3000;
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    MainActivity.this.finish();
-                                }
-                            }, delay);
+                            Exception ex = task.getException();
+                            mViewHolder.progressBar.setVisibility(View.INVISIBLE);
+                            if(ex.getMessage().contains("The password is invalid")){
+                                MetodosEstaticos.toastMsg(context, "Credenciais inválidas.");
+                            }else if(ex.getMessage().contains("Access to this account has been temporarily disabled")){
+                                MetodosEstaticos.toastMsg(context, "Conta temporariamente desativada por excesso de tentivas. Tente novamente mais tarde ou redefina sua senha.");
+                            }else{
+                                MetodosEstaticos.toastMsg(context, ex.getMessage());
+                            }
                         }
                     }
                 });
     }
 
+    private void loginMySql(){
+        Call<Cliente> call = crudUser.login(email);
+        call.enqueue(new Callback<Cliente>() {
+            @Override
+            public void onResponse(Call<Cliente> call, Response<Cliente> response) {
+                cli = response.body();
+
+                try {
+                    if(cli == null){
+                        throw new Exception("Falha ao receber resposta do servidor.");
+                    }
+                    if (cli.error != null && cli.error.equals("true")) {
+                        throw new Exception(cli.msg);
+                    } else if (cli.getAtivo() != 1) {
+                        throw new Exception("Usuário inativo. Verifique sua caixa de e-mail.");
+                    }
+                    //Convertendo data yyyy-mm-dd para dd/MM/yyyy
+                    cli.setDataNascimento(MetodosEstaticos.convertDateInForBr(cli.getDataNascimento()));
+
+                    if (cli.getEndCep() == null) { //testando se ja houve o primeiro acesso pelo Cep
+                        it = new Intent(context, CompletarCadastro.class);
+                    } else {
+                        it = new Intent(context, Home.class);
+                    }
+
+                    it.putExtra(ClassesConstants.CLIENTE, cli);
+                    mViewHolder.progressBar.setVisibility(View.INVISIBLE);
+                    startActivity(it);
+                    MainActivity.this.finish();
+
+                } catch (Exception ex) {
+                    mViewHolder.progressBar.setVisibility(View.INVISIBLE);
+                    MetodosEstaticos.toastMsg(context, ex.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Cliente> call, Throwable t) {
+                //Falha na requisição
+                MetodosEstaticos.testConnectionFailed(t, context);
+                mViewHolder.progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
     public void clickAbrirResetSenha(View v) {
         it = new Intent(context, ResetSenha.class);
         //primeiro parametro de onde/origem que surge a intenção e segundo aponta para onde vai

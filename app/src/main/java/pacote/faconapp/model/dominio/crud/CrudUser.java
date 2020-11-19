@@ -16,8 +16,7 @@ public interface CrudUser {
     //Faz conexao com banco para login retornando as infos em objeto de profissional, para caso seja
     @FormUrlEncoded
     @POST("/users/login")
-    Call<Cliente> login(@Field("email") String email,
-                        @Field("senha") String senha);
+    Call<Cliente> login(@Field("email") String email);
 
     @POST("/users/registerUser")
     Call<Cliente> registerUser(@Body Cliente usuario);

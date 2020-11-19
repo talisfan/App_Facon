@@ -118,7 +118,7 @@
                     android:inputType="textCapSentences"
                     android:maxLength="400"
                     android:padding="3dp"
-                    android:text="Eu sou um cara muito jkasbd"
+                    android:hint="Sem descrição..."
                     android:textSize="17sp" />
 
                 <TextView
@@ -152,7 +152,7 @@
                     android:background="@drawable/border_black_back_gray"
                     android:enabled="false"
                     android:padding="3dp"
-                    android:text="Formação: Alguma coisa - SENAI - 2009"
+                    android:hint="Sem formação declarada."
                     android:textSize="17sp" />
 
                 <TextView

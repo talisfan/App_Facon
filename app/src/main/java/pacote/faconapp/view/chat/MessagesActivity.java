@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.ViewHolder;
 
 import java.util.List;
@@ -37,6 +39,7 @@ import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
 import pacote.faconapp.adapter.ChatApplication;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
+import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.view.MainActivity;
 
 public class MessagesActivity extends AppCompatActivity {
@@ -59,24 +62,22 @@ public class MessagesActivity extends AppCompatActivity {
         adapter = new GroupAdapter();
         rv.setAdapter(adapter);
 
-        verifyAuthentication();
-        updateToken();
-    }
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull Item item, @NonNull View view) {
+                Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
 
-    private void updateToken() {
-        String token = FirebaseInstanceId.getInstance().getToken();
-        String uid = FirebaseAuth.getInstance().getUid();
+                MessagesActivity.ContactItem contactItem = (MessagesActivity.ContactItem) item;
+                intent.putExtra("user", contactItem.contact);
+                startActivity(intent);
+            }
+        });
 
-        if (uid != null) {
-            FirebaseFirestore.getInstance().collection("users")
-                    .document(uid)
-                    .update("token", token);
-        }
+        fetchLastMessage();
     }
 
     private void fetchLastMessage() {
         String uid = FirebaseAuth.getInstance().getUid();
-        //String uid = "wEkYc9Cbs4gmrrkpSZXUOVE9GxT2"; // talisson
         if (uid == null) return;
 
         FirebaseApp.initializeApp(this);
@@ -92,7 +93,7 @@ public class MessagesActivity extends AppCompatActivity {
                         if (documentChanges != null) {
                             for (DocumentChange doc: documentChanges) {
                                 if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    Contact contact = doc.getDocument().toObject(Contact.class);
+                                    ContatosFb contact = doc.getDocument().toObject(ContatosFb.class);
 
                                     adapter.add(new ContactItem(contact));
                                 }
@@ -100,14 +101,6 @@ public class MessagesActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-    private void verifyAuthentication() {
-        if (FirebaseAuth.getInstance().getUid() == null) {
-            Intent intent = new Intent(MessagesActivity.this, MainActivity.class);
-            startActivity(intent);
-            this.finish();
-        }
     }
 
     @Override
@@ -129,9 +122,9 @@ public class MessagesActivity extends AppCompatActivity {
 
     private class ContactItem extends Item<ViewHolder> {
 
-        private final Contact contact;
+        private final ContatosFb contact;
 
-        private ContactItem(Contact contact) {
+        private ContactItem(ContatosFb contact) {
             this.contact = contact;
         }
 
@@ -143,9 +136,18 @@ public class MessagesActivity extends AppCompatActivity {
 
             username.setText(contact.getUsername());
             message.setText(contact.getLastMessage());
-            Picasso.get()
-                    .load(contact.getPhotoUrl())
-                    .into(imgPhoto);
+            if(contact.getProfileUrl() != null && !contact.getProfileUrl().equals("")) {
+                contact.setPhotoUrl(contact.getProfileUrl());
+                Picasso.get()
+                        .load(contact.getProfileUrl())
+                        .into(imgPhoto);
+            }
+            if(contact.getPhotoUrl() != null && !contact.getPhotoUrl().equals("")) {
+                contact.setProfileUrl(contact.getPhotoUrl());
+                Picasso.get()
+                        .load(contact.getPhotoUrl())
+                        .into(imgPhoto);
+            }
         }
 
         @Override

@@ -62,7 +62,6 @@ public class ContactsActivity extends AppCompatActivity {
 
                 UserItem userItem = (UserItem) item;
                 intent.putExtra("user", userItem.user);
-
                 startActivity(intent);
             }
         });
@@ -110,15 +109,14 @@ public class ContactsActivity extends AppCompatActivity {
 
             txtUsername.setText(user.getUsername());
 
-            Picasso.get()
-                    .load(user.getProfileUrl())
-                    .into(imgPhoto);
-
+            if(user.getProfileUrl() != null && !user.getProfileUrl().equals("")) {
+                Picasso.get()
+                        .load(user.getProfileUrl())
+                        .into(imgPhoto);
+            }
         }
 
         @Override
-        public int getLayout() {
-            return R.layout.item_user;
-        }
+        public int getLayout() { return R.layout.item_user; }
     }
 }

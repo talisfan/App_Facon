@@ -8,7 +8,6 @@ public class UserFireBase implements Parcelable {
     private String uuid;
     private String username;
     private String profileUrl;
-    private String token;
     private boolean online;
 
     private UserFireBase() {
@@ -25,7 +24,6 @@ public class UserFireBase implements Parcelable {
         uuid = in.readString();
         username = in.readString();
         profileUrl = in.readString();
-        token = in.readString();
         online = in.readInt() == 1;
     }
 
@@ -53,10 +51,6 @@ public class UserFireBase implements Parcelable {
         return profileUrl;
     }
 
-    public String getToken() {
-        return token;
-    }
-
     public boolean isOnline() {
         return online;
     }
@@ -71,7 +65,6 @@ public class UserFireBase implements Parcelable {
         dest.writeString(uuid);
         dest.writeString(username);
         dest.writeString(profileUrl);
-        dest.writeString(token);
         dest.writeInt(online ? 1 : 0);
     }
 }
