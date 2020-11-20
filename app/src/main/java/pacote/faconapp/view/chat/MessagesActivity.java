@@ -80,8 +80,6 @@ public class MessagesActivity extends AppCompatActivity {
         String uid = FirebaseAuth.getInstance().getUid();
         if (uid == null) return;
 
-        FirebaseApp.initializeApp(this);
-
         FirebaseFirestore.getInstance().collection("/last-messages")
                 .document(uid)
                 .collection("contacts")
@@ -135,7 +133,11 @@ public class MessagesActivity extends AppCompatActivity {
             ImageView imgPhoto = viewHolder.itemView.findViewById(R.id.imageView2);
 
             username.setText(contact.getUsername());
-            message.setText(contact.getLastMessage());
+            if(contact.isMe()) {
+                message.setText( "Você: " + contact.getLastMessage());
+            }else{
+                message.setText(contact.getLastMessage());
+            }
             if(contact.getProfileUrl() != null && !contact.getProfileUrl().equals("")) {
                 contact.setPhotoUrl(contact.getProfileUrl());
                 Picasso.get()

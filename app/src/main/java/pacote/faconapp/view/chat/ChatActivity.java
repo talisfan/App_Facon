@@ -148,11 +148,12 @@ public class ChatActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
                             Contact contact = new Contact();
-                            contact.setUuid(toId);
+                            contact.setContato(toId);
                             contact.setUsername(user.getUsername());
                             contact.setPhotoUrl(user.getProfileUrl());
                             contact.setTimestamp(message.getTimestamp());
                             contact.setLastMessage(message.getText());
+                            contact.setMe(true);
 
                             FirebaseFirestore.getInstance().collection("/last-messages")
                                     .document(fromId)
@@ -171,11 +172,12 @@ public class ChatActivity extends AppCompatActivity {
                         public void onSuccess(DocumentReference documentReference) {
 
                             Contact contact = new Contact();
-                            contact.setUuid(toId);
+                            contact.setContato(toId);
                             contact.setUsername(me.getUsername());
                             contact.setPhotoUrl(me.getProfileUrl());
                             contact.setTimestamp(message.getTimestamp());
                             contact.setLastMessage(message.getText());
+                            contact.setMe(false);
 
                             FirebaseFirestore.getInstance().collection("/last-messages")
                                     .document(toId)

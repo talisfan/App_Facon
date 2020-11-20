@@ -4,11 +4,13 @@ import java.io.Serializable;
 
 public class Contact implements Serializable {
 
-    private String uuid;
+    private String contato;
     private String username;
     private String lastMessage;
-    private long timestamp;
     private String photoUrl;
+    private long timestamp;
+    private boolean me;
+
 
     public String getLastMessage() {
         return lastMessage;
@@ -26,12 +28,12 @@ public class Contact implements Serializable {
         this.photoUrl = photoUrl;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getContato() {
+        return contato;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setContato(String contato) {
+        this.contato = contato;
     }
 
     public String getUsername() {
@@ -48,5 +50,13 @@ public class Contact implements Serializable {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public boolean isMe() {
+        return me;
+    }
+
+    public void setMe(boolean me) {
+        this.me = me;
     }
 }

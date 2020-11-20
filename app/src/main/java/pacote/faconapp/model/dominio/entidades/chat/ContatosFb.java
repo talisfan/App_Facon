@@ -13,15 +13,8 @@ public class ContatosFb implements Serializable {
     private String photoUrl; // ambos são mesma coisa mas com finalidades diferentes
     private String contato;
     private String lastMessage;
+    public boolean me;
     private long timestamp;
-
-    public String getLastMessage() {
-        return lastMessage;
-    }
-
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
-    }
 
     private ContatosFb() { }
 
@@ -39,9 +32,18 @@ public class ContatosFb implements Serializable {
         contato = in.readString();
     }
 
+    public String getLastMessage() {
+        return lastMessage;
+    }
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
     public String getIdUser() {
         return idUser;
     }
+
+    public String getContato() { return contato; }
 
     public String getUsername() {
         return username;
@@ -50,15 +52,11 @@ public class ContatosFb implements Serializable {
     public String getProfileUrl() {
         return profileUrl;
     }
-
     public void setProfileUrl(String profileUrl) { this.profileUrl = profileUrl; }
-
-    public String getContato() { return contato; }
 
     public long getTimestamp() {
         return timestamp;
     }
-
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
@@ -66,8 +64,10 @@ public class ContatosFb implements Serializable {
     public String getPhotoUrl() {
         return photoUrl;
     }
-
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
     }
+
+    public boolean isMe() { return me; }
+    public void setMe(boolean me) { this.me = me; }
 }
