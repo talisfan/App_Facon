@@ -1,10 +1,10 @@
-drop database if exists Facon_DataBase;
+drop database if exists facon_database;
 
-create database if not exists Facon_DataBase 
+create database if not exists facon_database 
 default character set utf8
 default collate utf8_general_ci;
 
-use Facon_DataBase;
+use facon_database;
 
 #--------------- TABELAS ---------------#
 
@@ -24,9 +24,10 @@ endCidade VARCHAR(60) NULL,
 endEstado VARCHAR(2) NULL,
 telFixo VARCHAR(10) NULL,
 telCell VARCHAR(11) UNIQUE NOT NULL,
-foto BLOB NULL,
+foto TEXT NULL,
 ativo INT NOT NULL DEFAULT 1,
-senha TEXT NOT NULL
+senha TEXT NOT NULL,
+idFb TEXT NOT NULL
 );
 
 create table if not exists tbl_tipoServico(
@@ -113,19 +114,19 @@ CREATE INDEX idx_profissoes ON tbl_tipoServico(id);
  
  
 ############# INSERTS ##########
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep) VALUES 
-(1, 'Gabrielle Luques', '2000-03-29', '381432402', '49677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'gabi@gabi.com', '11951184349', '06332190');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb) VALUES 
+(1, 'Gabrielle Luques', '2000-03-29', '381432402', '49677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'gabi@gabi.com', '11951184349', '06332190', 'PIZDVlHY27gT7SyeYG8cpkm6S3V2');
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep) VALUES 
-(2, 'Lucas Almeida', '2000-03-29', '381422402', '59677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'lucas@lucas.com', '11951184549', '06332190');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb) VALUES 
+(2, 'Lucas Almeida', '2000-03-29', '381422402', '59677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'lucas@lucas.com', '11951184549', '06332190', 'wEkYc9Cbs4gmrrkpSZXUOVE9GxT2');
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep) VALUES 
-(3, 'Talisson Luques', '2000-03-29', '383432402', '47677764677', 'Carapicuíba', 'SP','Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'talis@talis.com', '11951184049', '06332190');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb) VALUES 
+(3, 'Talisson Luques', '2000-03-29', '383432402', '47677764677', 'Carapicuíba', 'SP','Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'talis@talis.com', '11951184049', '06332190', 'S8v3ukcmavh2rMDETyLGCb4KNYU2');
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep) VALUES 
-(4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'luiz@luiz.com', '11951104549', '06332190');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb) VALUES 
+(4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'luiz@luiz.com', '11951104549', '06332190', 'k25gSOw4mthSXOD8KnG7wOxjraS2');
 
-#SELECT * from tbl_usuario;
+SELECT * from tbl_usuario;
 
 INSERT INTO tbl_tipoServico (categoria, profissao) VALUES  
 ('Construção e Reparos', 'engenheiro civil'), 
@@ -301,5 +302,3 @@ order by dtExperiencia asc
 ;
 
 #####
-
-

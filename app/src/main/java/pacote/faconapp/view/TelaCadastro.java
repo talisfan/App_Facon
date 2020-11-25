@@ -15,8 +15,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
@@ -123,55 +128,7 @@ public class TelaCadastro extends AppCompatActivity {
                 //Fromatando data para padrão americano para inserir no banco
                 user.setDataNascimento(MetodosEstaticos.convertDateBrForIn(user.getDataNascimento()));
 
-                Call<Cliente> call = crudUser.registerUser(user);
-                call.enqueue(new Callback<Cliente>() {
-                    @Override
-                    public void onResponse(Call<Cliente> call, Response<Cliente> response) {
-                        try {
-                            Usuario user = response.body();
-                            if (user.error != null && user.error.equals("true")) {
-                                throw new Exception(user.msg);
-                            }
-
-                            createUserFb();
-
-                            alertD.setTitle("CADASTRO EFETUADO COM SUCESSO !");
-                            alertD.setMessage("Redirecionando...");
-                            alertD.setNeutralButton(null, null);
-                            alertD.setPositiveButton(null, null);
-                            alertD.show();
-                            it = new Intent(context, MainActivity.class);
-
-                            Handler handler = new Handler();
-                            long delay = 4000;
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    startActivity(it);
-                                }
-                            }, delay);
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    TelaCadastro.this.finish();
-                                }
-                            }, delay);
-
-                        } catch (Exception ex) {
-                            alertD.setTitle("Error");
-                            alertD.setMessage(ex.getMessage());
-                            alertD.setNegativeButton("OK", null);
-                            alertD.show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Cliente> call, Throwable t) {
-                        if (t.getMessage().contains("Failed to connect")) {
-                            MetodosEstaticos.toastMsg(context, ExceptionsServer.SERVER_ERROR);
-                        } else {
-                            MetodosEstaticos.toastMsg(context, t.getMessage());
-                        }
-                    }
-                });
+                createUserFb();
             }
         } catch (Exception ex) {
             if (ex.getMessage().equals(ExceptionsCadastro.ERRO_NOME)) {
@@ -212,13 +169,20 @@ public class TelaCadastro extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {}
+                        if (task.isSuccessful()) {
+                            contador = 0;
+                            if(task.getResult().getUser() != null) {
+                                FirebaseUser a = task.getResult().getUser();
+                                user.setIdFb(a.getUid());
+                                createUserMySql();
+                            }
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception ex) {
-                        while (contador <= 5) {
+                        if(contador <= 5) {
                             Handler handler = new Handler();
                             long delay = 4000;
                             handler.postDelayed(new Runnable() {
@@ -229,7 +193,7 @@ public class TelaCadastro extends AppCompatActivity {
                                 }
                             }, delay);
                         }
-                        if (contador > 5) {
+                        if(contador > 5) {
                             MetodosEstaticos.toastMsg(context, "Erro FireBase. " + ex.getMessage());
                             it = new Intent(context, MainActivity.class);
                             it.putExtra(ClassesConstants.CLIENTE, user);
@@ -249,5 +213,84 @@ public class TelaCadastro extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void createUserMySql() {
+        Call<Cliente> call = crudUser.registerUser(user);
+        call.enqueue(new Callback<Cliente>() {
+            @Override
+            public void onResponse(Call<Cliente> call, Response<Cliente> response) {
+                try {
+                    Usuario user = response.body();
+                    if (user.error != null && user.error.equals("true")) {
+                        throw new Exception(user.msg);
+                    }
+
+                    alertD.setTitle("CADASTRO EFETUADO COM SUCESSO !");
+                    alertD.setMessage("Redirecionando...");
+                    alertD.setNeutralButton(null, null);
+                    alertD.setPositiveButton(null, null);
+                    alertD.show();
+                    it = new Intent(context, MainActivity.class);
+
+                    Handler handler = new Handler();
+                    long delay = 4000;
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            startActivity(it);
+                        }
+                    }, delay);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            TelaCadastro.this.finish();
+                        }
+                    }, delay);
+
+                } catch (Exception ex) {
+                    alertD.setTitle("Error");
+                    alertD.setMessage(ex.getMessage());
+                    alertD.setNegativeButton("OK", null);
+                    alertD.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Cliente> call, Throwable t) {
+                if (t.getMessage().contains("Failed to connect")) {
+                    MetodosEstaticos.toastMsg(context, ExceptionsServer.SERVER_ERROR);
+                } else {
+                    MetodosEstaticos.toastMsg(context, t.getMessage());
+                }
+                if(contador <= 5) {
+                    Handler handler = new Handler();
+                    long delay = 4000;
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            MetodosEstaticos.toastMsg(context, t.getMessage() + " - Tentando novamente...");
+                            contador++;
+                            createUserMySql();
+                        }
+                    }, delay);
+                }
+                if(contador > 5) {
+                    MetodosEstaticos.toastMsg(context, "Erro MySql. " + t.getMessage());
+                    it = new Intent(context, MainActivity.class);
+                    it.putExtra(ClassesConstants.CLIENTE, user);
+
+                    Handler handler = new Handler();
+                    long delay = 5000;
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            startActivity(it);
+                        }
+                    }, delay);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            finish();
+                        }
+                    }, delay);
+                }
+            }
+        });
     }
 }

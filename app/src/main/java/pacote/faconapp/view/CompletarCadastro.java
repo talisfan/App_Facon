@@ -171,7 +171,6 @@ public class CompletarCadastro extends AppCompatActivity {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mSelectedUri);
                 mViewHolder.foto.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
-                user.setFoto(bitmap);
                 isFotoSelected = true;
             } catch (Exception ex) {
                 MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Erro ao setar foto.");
@@ -185,7 +184,6 @@ public class CompletarCadastro extends AppCompatActivity {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 mViewHolder.foto.setImageBitmap(imageBitmap);
-                user.setFoto(imageBitmap);
                 isFotoSelected = true;
             } catch (Exception ex) {
                 MetodosEstaticos.toastMsg(context, ex.getMessage() + " - Erro ao setar foto.");
@@ -256,52 +254,7 @@ public class CompletarCadastro extends AppCompatActivity {
             ValidarCompletarCad validar = new ValidarCompletarCad();
             if (validar.validarCompletarCad(user, context)) {
 
-                Call<Cliente> call = crudUser.completCad(user);
-                //enqueue aguarda a resposta sem travar user
-                call.enqueue(new Callback<Cliente>() {
-                    @Override
-                    public void onResponse(Call<Cliente> call, Response<Cliente> response) {
-                        try {
-                            Cliente u = response.body();
-
-                            if (u.error != null && u.error.equals("true")) {
-                                throw new Exception(u.msg);
-                            }
-                            savePhotoFb();
-//                            alertD.setTitle("TUDO OK !");
-//                            alertD.setMessage("Carregando...");
-//                            alertD.setPositiveButton(null, null);
-//                            alertD.show();
-//
-//                            it = new Intent(context, EscolhaUser.class);
-//                            it.putExtra(ClassesConstants.CLIENTE, user);
-//
-//                            Handler handler = new Handler();
-//                            long delay = 2000;
-//                            handler.postDelayed(new Runnable() {
-//                                public void run() {
-//                                    startActivity(it);
-//                                }
-//                            }, delay);
-//                            handler.postDelayed(new Runnable() {
-//                                public void run() {
-//                                    finish();
-//                                }
-//                            }, delay);
-
-                        } catch (Exception ex) {
-                            alertD.setTitle("Error");
-                            alertD.setMessage(ex.getMessage());
-                            alertD.setPositiveButton("OK", null);
-                            alertD.show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Cliente> call, Throwable t) {
-                        MetodosEstaticos.testConnectionFailed(t, context);
-                    }
-                });
+                savePhotoFb();
             }
         } catch (Exception ex) {
             MetodosEstaticos.toastMsg(context, ex.getMessage());
@@ -333,6 +286,8 @@ public class CompletarCadastro extends AppCompatActivity {
                                 String username = user.getEmail();
                                 String profileUrl = uri.toString();
 
+                                user.setFoto(profileUrl);
+
                                 UserFireBase us = new UserFireBase(uid, username, profileUrl);
 
                                 FirebaseFirestore.getInstance().collection("users")
@@ -341,33 +296,14 @@ public class CompletarCadastro extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                alertD.setView(null);
-                                                alertD.setTitle("TUDO OK !");
-                                                alertD.setMessage("Carregando...");
-                                                alertD.setPositiveButton(null, null);
-                                                alertD.show();
 
-                                                it = new Intent(context, EscolhaUser.class);
-                                                it.putExtra(ClassesConstants.CLIENTE, user);
-
-                                                Handler handler = new Handler();
-                                                long delay = 2000;
-                                                handler.postDelayed(new Runnable() {
-                                                    public void run() {
-                                                        startActivity(it);
-                                                    }
-                                                }, delay);
-                                                handler.postDelayed(new Runnable() {
-                                                    public void run() {
-                                                        finish();
-                                                    }
-                                                }, delay);
+                                                saveMysql();
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception ex) {
-                                                while (contador <= 5) {
+                                                if (contador <= 5) {
                                                     Handler handler = new Handler();
                                                     long delay = 4000;
                                                     handler.postDelayed(new Runnable() {
@@ -405,7 +341,7 @@ public class CompletarCadastro extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception ex) {
-                        while (contador <= 5) {
+                        if (contador <= 5) {
                             Handler handler = new Handler();
                             long delay = 4000;
                             handler.postDelayed(new Runnable() {
@@ -436,6 +372,56 @@ public class CompletarCadastro extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void saveMysql(){
+        Call<Cliente> call = crudUser.completCad(user);
+        //enqueue aguarda a resposta sem travar user
+        call.enqueue(new Callback<Cliente>() {
+            @Override
+            public void onResponse(Call<Cliente> call, Response<Cliente> response) {
+                try {
+                    Cliente u = response.body();
+
+                    if (u.error != null && u.error.equals("true")) {
+                        throw new Exception(u.msg);
+                    }
+
+                    alertD.setView(null);
+                    alertD.setTitle("TUDO OK !");
+                    alertD.setMessage("Carregando...");
+                    alertD.setPositiveButton(null, null);
+                    alertD.show();
+
+                    it = new Intent(context, EscolhaUser.class);
+                    it.putExtra(ClassesConstants.CLIENTE, user);
+
+                    Handler handler = new Handler();
+                    long delay = 2000;
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            startActivity(it);
+                        }
+                    }, delay);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            finish();
+                        }
+                    }, delay);
+
+                } catch (Exception ex) {
+                    alertD.setTitle("Error");
+                    alertD.setMessage(ex.getMessage());
+                    alertD.setPositiveButton("OK", null);
+                    alertD.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Cliente> call, Throwable t) {
+                MetodosEstaticos.testConnectionFailed(t, context);
+            }
+        });
     }
 
 

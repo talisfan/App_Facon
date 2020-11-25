@@ -15,7 +15,7 @@ exports.login = (req, res, next) => {
     } else {
       conn.query(
         "SELECT u.id, u.nome, u.email, u.ativo, u.endBairro, u.endCep, u.endCidade, u.foto, " +
-          "u.endEstado, u.endNum, u.endRua, u.dtNascimento, u.telCell, u.telFixo, u.email, " +
+          "u.endEstado, u.endNum, u.endRua, u.dtNascimento, u.telCell, u.telFixo, u.email, u.idFb, " +
           "p.idProfissional, p.descricao, p.dtExperiencia, p.formacao, p.idProfissao, " +
           "s.categoria, s.profissao, " +
           "COUNT(a.id) AS qntAv, ROUND(AVG(a.estrelas)) AS estrelas " +
@@ -38,7 +38,7 @@ exports.login = (req, res, next) => {
               msg: error
             });
           }
-
+          //console.log(email);
           if (result.length < 1) {
             return res.send({
               error: "true",
@@ -68,6 +68,7 @@ exports.registerUser = (req, res, next) => {
     (rg = req.body.rg),
     (dtNascimento = req.body.dtNascimento),
     (senha = req.body.senha),
+    (idFb = req.body.idFb)
   ];
 
   mysql.getConnection((error, conn) => {
@@ -107,8 +108,8 @@ exports.registerUser = (req, res, next) => {
                 });
               }
               conn.query(
-                "INSERT INTO tbl_usuario (nome, email, telCell, telFixo, cpf, rg, dtNascimento, senha) " +
-                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+                "INSERT INTO tbl_usuario (nome, email, telCell, telFixo, cpf, rg, dtNascimento, senha, idFb) " +
+                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
 
                 dados,
 
@@ -219,7 +220,7 @@ exports.seekProfessionals = (req, res, next) => {
     } else {
       conn.query(
         "SELECT p.idProfissional, p.idUsuario, p.dtExperiencia, p.descricao, " +
-          "u.id, u.nome, u.endCidade, u.endEstado, u.dtNascimento, u.ativo, " +
+          "u.id, u.nome, u.endCidade, u.endEstado, u.dtNascimento, u.ativo, u.idFb, " +
           "s.profissao, s.categoria, " +
           "ROUND(AVG(a.estrelas)) AS estrelas, COUNT(a.id) AS qntAv " +
           "FROM tbl_profissional p " +

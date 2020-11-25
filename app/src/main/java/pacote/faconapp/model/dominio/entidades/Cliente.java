@@ -24,6 +24,8 @@ public class Cliente extends Usuario {
     private String categoria;
     @SerializedName("profissao")
     private String profissao;
+    @SerializedName("idFb")
+    private String idFb;
 
     // MÉTODOS GETTERS & SETTERS
 
@@ -83,4 +85,11 @@ public class Cliente extends Usuario {
         this.profissao = profissao;
     }
 
+    public String getIdFb() {
+        return idFb;
+    }
+
+    public void setIdFb(String idFb) {
+        this.idFb = idFb;
+    }
 }

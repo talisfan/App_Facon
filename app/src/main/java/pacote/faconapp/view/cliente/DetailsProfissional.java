@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.squareup.picasso.Picasso;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -46,6 +48,7 @@ public class DetailsProfissional extends AppCompatActivity {
         mViewHolder.descricao = findViewById(R.id.txtDescricao);
         mViewHolder.formacao = findViewById(R.id.txtFormacao);
         mViewHolder.idade = findViewById(R.id.lblIdade);
+        mViewHolder.fotoProfissional = findViewById(R.id.fotoProfissional);
 
         try {
             profissionalDetails = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
@@ -59,6 +62,12 @@ public class DetailsProfissional extends AppCompatActivity {
             mViewHolder.qntAv.setText("Média de " + profissionalDetails.getQntAv() + " avaliações.");
             mViewHolder.descricao.setText(profissionalDetails.getDescricao());
             mViewHolder.formacao.setText(profissionalDetails.getFormacao());
+
+            if(profissionalDetails.getFoto() != null && !profissionalDetails.getFoto().equals("")) {
+                Picasso.get()
+                        .load(profissionalDetails.getFoto())
+                        .into(mViewHolder.fotoProfissional);
+            }
 
             switch (profissionalDetails.getEstrelas()) {
                 case 1:
@@ -117,5 +126,6 @@ public class DetailsProfissional extends AppCompatActivity {
         EditText formacao;
         TextView idade;
         ImageView estrelas;
+        ImageView fotoProfissional;
     }
 }

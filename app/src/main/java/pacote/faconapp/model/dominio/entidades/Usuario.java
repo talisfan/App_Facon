@@ -38,7 +38,7 @@ public abstract class Usuario implements Serializable {
     @SerializedName("telFixo")
     private String telFixo;
     @SerializedName("foto")
-    private Bitmap foto;
+    private String foto;
     @SerializedName("ativo")
     private int ativo;
     private String senha;
@@ -144,10 +144,10 @@ public abstract class Usuario implements Serializable {
         this.ativo = ativo;
     }
 
-    public Bitmap getFoto() {
+    public String getFoto() {
         return foto;
     }
-    public void setFoto(Bitmap foto) {
+    public void setFoto(String foto) {
         this.foto = foto;
     }
 
