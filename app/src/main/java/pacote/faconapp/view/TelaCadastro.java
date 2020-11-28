@@ -230,6 +230,7 @@ public class TelaCadastro extends AppCompatActivity {
                     alertD.setMessage("Redirecionando...");
                     alertD.setNeutralButton(null, null);
                     alertD.setPositiveButton(null, null);
+                    alertD.setNegativeButton(null, null);
                     alertD.show();
                     it = new Intent(context, MainActivity.class);
 

@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import pacote.faconapp.MetodosEstaticos;
@@ -104,7 +106,12 @@ public class ProfissionalListAdapter extends RecyclerView.Adapter<ProfissionalLi
             mNomeProfissional.setText(profissional.getNome());
             mProfissao.setText(profissional.getProfissao());
             mExperiencia.setText(" a " + exp + " meses.");
-            //this.mFoto.setImageDrawable(profissional.getFoto());
+
+            if(profissional.getFoto() != null && profissional.getFoto() != ""){
+                Picasso.get()
+                        .load(profissional.getFoto())
+                        .into(mFoto);
+            }
 
             this.mDetalhes.setOnClickListener(new View.OnClickListener() {
                 @Override

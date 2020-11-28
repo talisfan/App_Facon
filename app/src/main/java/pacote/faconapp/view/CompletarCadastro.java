@@ -78,8 +78,6 @@ public class CompletarCadastro extends AppCompatActivity {
         alertD = new AlertDialog.Builder(context);
         crudUser = ApiDb.createService(CrudUser.class);
         user = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
-//        FirebaseApp.initializeApp(context);
-//        user = new Cliente();
 
         mViewHolder.txtCep = findViewById(R.id.txtCep);
         mViewHolder.txtRua = findViewById(R.id.txtRua);
@@ -101,24 +99,24 @@ public class CompletarCadastro extends AppCompatActivity {
     }
 
 
-    public static ImageView convertBlobToImage(Context c, byte[] bytes) {
-
-        try { // Tenta converter o blob em uma imagem
-            //alimenta a imageStream com o que tem no bytes
-            ByteArrayInputStream imageStream = new ByteArrayInputStream(bytes);
-
-            //seta no bmp o stream carregado na linha de cima
-            Bitmap bmp = BitmapFactory.decodeStream(imageStream);
-
-            ImageView img = new ImageView(c);
-            img.setImageBitmap(bmp); // aqui seta a imagem no imageview
-
-            return img; // retorna a imagem
-        } catch (Exception ex) {
-            MetodosEstaticos.toastMsg(c, "Erro ao converter o arquivo binário para imagem. " + ex.getLocalizedMessage());
-            return new ImageView(c); // Retorna a imagem do jeito que está
-        }
-    }
+//    public static ImageView convertBlobToImage(Context c, byte[] bytes) {
+//
+//        try { // Tenta converter o blob em uma imagem
+//            //alimenta a imageStream com o que tem no bytes
+//            ByteArrayInputStream imageStream = new ByteArrayInputStream(bytes);
+//
+//            //seta no bmp o stream carregado na linha de cima
+//            Bitmap bmp = BitmapFactory.decodeStream(imageStream);
+//
+//            ImageView img = new ImageView(c);
+//            img.setImageBitmap(bmp); // aqui seta a imagem no imageview
+//
+//            return img; // retorna a imagem
+//        } catch (Exception ex) {
+//            MetodosEstaticos.toastMsg(c, "Erro ao converter o arquivo binário para imagem. " + ex.getLocalizedMessage());
+//            return new ImageView(c); // Retorna a imagem do jeito que está
+//        }
+//    }
 
 
     public void selectPhoto(View v) {
@@ -250,10 +248,10 @@ public class CompletarCadastro extends AppCompatActivity {
             user.setEnderecoNum(mViewHolder.txtNum.getText().toString());
             user.setEnderecoEstado(mViewHolder.txtEstado.getText().toString());
             user.setEnderecoRua(mViewHolder.txtRua.getText().toString());
+            user.setFoto(mSelectedUri.toString());
 
             ValidarCompletarCad validar = new ValidarCompletarCad();
             if (validar.validarCompletarCad(user, context)) {
-
                 savePhotoFb();
             }
         } catch (Exception ex) {

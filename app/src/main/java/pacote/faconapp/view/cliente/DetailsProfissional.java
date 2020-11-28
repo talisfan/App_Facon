@@ -1,15 +1,26 @@
 package pacote.faconapp.view.cliente;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
+import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
+import com.xwray.groupie.ViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,6 +31,11 @@ import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.constants.ExceptionsServer;
 import pacote.faconapp.constants.InfosLoginConstants;
 import pacote.faconapp.model.dominio.entidades.Cliente;
+import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
+import pacote.faconapp.model.dominio.entidades.chat.UserFireBase;
+import pacote.faconapp.view.EscolhaUser;
+import pacote.faconapp.view.chat.ChatActivity;
+import pacote.faconapp.view.chat.ContactsActivity;
 
 public class DetailsProfissional extends AppCompatActivity {
 
@@ -49,6 +65,7 @@ public class DetailsProfissional extends AppCompatActivity {
         mViewHolder.formacao = findViewById(R.id.txtFormacao);
         mViewHolder.idade = findViewById(R.id.lblIdade);
         mViewHolder.fotoProfissional = findViewById(R.id.fotoProfissional);
+        mViewHolder.btnNegociar = findViewById(R.id.btnNegociar);
 
         try {
             profissionalDetails = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
@@ -115,6 +132,26 @@ public class DetailsProfissional extends AppCompatActivity {
         }
     }
 
+    public void btnChat(View v){
+
+        // adicionando usuario ao contatos
+        UserFireBase us = new UserFireBase(profissionalDetails.getIdFb(), profissionalDetails.getNome(), profissionalDetails.getFoto());
+
+        FirebaseFirestore.getInstance().collection("contatos")
+                .document(profissionalDetails.getIdFb())
+                .set(us)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Intent intent = new Intent(DetailsProfissional.this, ChatActivity.class);
+
+                        ContatosFb userItem = new ContatosFb(FirebaseAuth.getInstance().getUid(), profissionalDetails.getNome(), profissionalDetails.getFoto(), profissionalDetails.getIdFb());
+                        intent.putExtra("user", userItem);
+                        startActivity(intent);
+                    }
+                });
+    }
+
     private static class ViewHolder {
         TextView nome;
         TextView exp;
@@ -122,10 +159,11 @@ public class DetailsProfissional extends AppCompatActivity {
         TextView profissao;
         TextView cidade;
         TextView qntAv;
+        TextView idade;
         EditText descricao;
         EditText formacao;
-        TextView idade;
         ImageView estrelas;
         ImageView fotoProfissional;
+        Button btnNegociar;
     }
 }

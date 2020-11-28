@@ -11,7 +11,7 @@ exports.getUsers = (req, res, next) => {
     } else {
       conn.query(
         "SELECT * FROM tbl_usuario u " +
-          "LEFT OUTER JOIN tbl_profissional p ON u.id = p.idUsuario;",
+        "LEFT OUTER JOIN tbl_profissional p ON u.id = p.idUsuario;",
 
         (error, result, field) => {
           conn.release();

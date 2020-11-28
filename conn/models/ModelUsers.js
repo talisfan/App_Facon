@@ -154,6 +154,7 @@ exports.completCad = (req, res, next) => {
     (endNum = req.body.endNum),
     (endEstado = req.body.endEstado),
     (endRua = req.body.endRua),
+    (foto = req.body.foto),
     (id = req.body.id),
   ];
 
@@ -166,7 +167,7 @@ exports.completCad = (req, res, next) => {
     } else {
       conn.query(
         "UPDATE tbl_usuario SET endCidade = ?, endCep = ?, endBairro = ?, endNum = ?, " +
-          "endEstado = ?, endRua = ? WHERE id = ?;",
+          "endEstado = ?, endRua = ?, foto = ? WHERE id = ?;",
 
         dados,
 
@@ -220,7 +221,7 @@ exports.seekProfessionals = (req, res, next) => {
     } else {
       conn.query(
         "SELECT p.idProfissional, p.idUsuario, p.dtExperiencia, p.descricao, " +
-          "u.id, u.nome, u.endCidade, u.endEstado, u.dtNascimento, u.ativo, u.idFb, " +
+          "u.id, u.nome, u.endCidade, u.endEstado, u.dtNascimento, u.ativo, u.idFb, u.foto," +
           "s.profissao, s.categoria, " +
           "ROUND(AVG(a.estrelas)) AS estrelas, COUNT(a.id) AS qntAv " +
           "FROM tbl_profissional p " +

@@ -13,7 +13,8 @@
         android:layout_height="100dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="#003F5184"
+        android:foreground="@drawable/border_circle_gray"
+        android:scaleType="centerCrop"
         android:src="@drawable/add_foto" />
 
     <TextView
@@ -171,12 +172,14 @@
         android:foreground="@color/black" />
 
     <Button
+        android:id="@+id/btnNegociar"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/vi2"
         android:layout_alignParentStart="true"
         android:layout_marginTop="10dp"
         android:background="@color/orange"
+        android:onClick="btnChat"
         android:text="@string/btn_negociar" />
 
 </RelativeLayout>

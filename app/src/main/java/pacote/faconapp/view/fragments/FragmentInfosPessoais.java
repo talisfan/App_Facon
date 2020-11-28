@@ -15,6 +15,9 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
+
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
 import pacote.faconapp.constants.ClassesConstants;
@@ -109,6 +112,12 @@ public class FragmentInfosPessoais extends Fragment {
 
             if(cli.getTelFixo() != null && !cli.getTelFixo().equals("")) { mViewHolder.telFixo.setText("Tel Fixo: " + cli.getTelFixo()); }
             else{ mViewHolder.telFixo.setVisibility(View.GONE); }
+
+            if(cli.getFoto() != null && cli.getFoto() != ""){
+                Picasso.get()
+                        .load(cli.getFoto())
+                        .into(mViewHolder.foto);
+            }
 
             // eventos de click para editar informacoes pessoais
             mViewHolder.editInfos.setOnClickListener(new View.OnClickListener() {

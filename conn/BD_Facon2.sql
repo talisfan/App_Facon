@@ -114,17 +114,21 @@ CREATE INDEX idx_profissoes ON tbl_tipoServico(id);
  
  
 ############# INSERTS ##########
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb) VALUES 
-(1, 'Gabrielle Luques', '2000-03-29', '381432402', '49677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'gabi@gabi.com', '11951184349', '06332190', 'PIZDVlHY27gT7SyeYG8cpkm6S3V2');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 
+(1, 'Gabrielle Luques', '2000-03-29', '381432402', '49677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'gabi@gabi.com',
+'11951184349', '06332190', 'PIZDVlHY27gT7SyeYG8cpkm6S3V2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F5ab35863-fe64-4635-9c23-bcf00fe1975a?alt=media&token=62282adf-6c8e-4a39-865d-1225d5a21011");
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb) VALUES 
-(2, 'Lucas Almeida', '2000-03-29', '381422402', '59677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'lucas@lucas.com', '11951184549', '06332190', 'wEkYc9Cbs4gmrrkpSZXUOVE9GxT2');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 
+(2, 'Lucas Almeida', '2000-03-29', '381422402', '59677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'lucas@lucas.com',
+'11951184549', '06332190', 'wEkYc9Cbs4gmrrkpSZXUOVE9GxT2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F3253b880-9556-4823-8820-e21a017c620c?alt=media&token=531f0209-a69d-4c90-b5a4-7c2ef85b3ef1");
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb) VALUES 
-(3, 'Talisson Luques', '2000-03-29', '383432402', '47677764677', 'Carapicuíba', 'SP','Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'talis@talis.com', '11951184049', '06332190', 'S8v3ukcmavh2rMDETyLGCb4KNYU2');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 
+(3, 'Talisson Luques', '2000-03-29', '383432402', '47677764677', 'Carapicuíba', 'SP','Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'talis@talis.com',
+'11951184049', '06332190', 'S8v3ukcmavh2rMDETyLGCb4KNYU2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F5ab35863-fe64-4635-9c23-bcf00fe1975a?alt=media&token=62282adf-6c8e-4a39-865d-1225d5a21011");
 
-INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb) VALUES 
-(4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'luiz@luiz.com', '11951104549', '06332190', 'k25gSOw4mthSXOD8KnG7wOxjraS2');
+INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 
+(4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'luiz@luiz.com', '11951104549',
+'06332190', 'k25gSOw4mthSXOD8KnG7wOxjraS2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F3253b880-9556-4823-8820-e21a017c620c?alt=media&token=531f0209-a69d-4c90-b5a4-7c2ef85b3ef1");
 
 SELECT * from tbl_usuario;
 
