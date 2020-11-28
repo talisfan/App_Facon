@@ -68,7 +68,7 @@ public class MessagesActivity extends AppCompatActivity {
             public void onItemClick(@NonNull Item item, @NonNull View view) {
                 Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
 
-                MessagesActivity.ContactItem contactItem = (MessagesActivity.ContactItem) item;
+                ContactItem contactItem = (ContactItem) item;
                 intent.putExtra(ClassesConstants.PROFISSIONAL, contactItem.contact);
                 startActivity(intent);
             }

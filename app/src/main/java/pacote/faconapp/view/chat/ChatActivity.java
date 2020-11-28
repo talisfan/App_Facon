@@ -172,7 +172,7 @@ public class ChatActivity extends AppCompatActivity {
                         public void onSuccess(DocumentReference documentReference) {
 
                             Contact contact = new Contact();
-                            contact.setContato(toId);
+                            contact.setContato(fromId);
                             contact.setUsername(me.getUsername());
                             contact.setPhotoUrl(me.getProfileUrl());
                             contact.setTimestamp(message.getTimestamp());

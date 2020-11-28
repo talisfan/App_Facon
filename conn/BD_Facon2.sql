@@ -115,20 +115,20 @@ CREATE INDEX idx_profissoes ON tbl_tipoServico(id);
  
 ############# INSERTS ##########
 INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 
-(1, 'Gabrielle Luques', '2000-03-29', '381432402', '49677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'gabi@gabi.com',
-'11951184349', '06332190', 'PIZDVlHY27gT7SyeYG8cpkm6S3V2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F5ab35863-fe64-4635-9c23-bcf00fe1975a?alt=media&token=62282adf-6c8e-4a39-865d-1225d5a21011");
+(1, 'Gabrielle Luques', '2000-03-29', '381432402', '49677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'gabi@gmail.com',
+'11951184349', '06332190', 'oER3PPYekAXoIfklFamUntpLcYi1', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2Fmulher-orientemedio-0303.jpg?alt=media&token=d6275f2b-0f02-4180-ac44-840b2f613baf");
 
 INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 
-(2, 'Lucas Almeida', '2000-03-29', '381422402', '59677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'lucas@lucas.com',
-'11951184549', '06332190', 'wEkYc9Cbs4gmrrkpSZXUOVE9GxT2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F3253b880-9556-4823-8820-e21a017c620c?alt=media&token=531f0209-a69d-4c90-b5a4-7c2ef85b3ef1");
+(2, 'Flavio Alves', '2000-03-29', '381422402', '59677364677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'flavio@gmail.com',
+'11951184549', '06332190', '8wyqSnA3RETHUMZZ8COQZPFAXc23', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F3253b880-9556-4823-8820-e21a017c620c?alt=media&token=531f0209-a69d-4c90-b5a4-7c2ef85b3ef1");
 
 INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 
-(3, 'Talisson Luques', '2000-03-29', '383432402', '47677764677', 'Carapicuíba', 'SP','Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'talis@talis.com',
-'11951184049', '06332190', 'S8v3ukcmavh2rMDETyLGCb4KNYU2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F5ab35863-fe64-4635-9c23-bcf00fe1975a?alt=media&token=62282adf-6c8e-4a39-865d-1225d5a21011");
+(3, 'Talisson Luques', '2000-03-29', '383432402', '47677764677', 'Carapicuíba', 'SP','Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'talis@gmail.com',
+'11951184049', '06332190', '7UDK2owFkuanW9yeId7N6vuxzah2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F5ab35863-fe64-4635-9c23-bcf00fe1975a?alt=media&token=62282adf-6c8e-4a39-865d-1225d5a21011");
 
 INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 
-(4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'luiz@luiz.com', '11951104549',
-'06332190', 'k25gSOw4mthSXOD8KnG7wOxjraS2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2F3253b880-9556-4823-8820-e21a017c620c?alt=media&token=531f0209-a69d-4c90-b5a4-7c2ef85b3ef1");
+(4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'luiz@gmail.com', '11951104549',
+'06332190', '4G8kp12MIWdxJEU0pXv9hRHs7yV2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2FwillSmith.jpeg?alt=media&token=919bd79f-2bed-45a1-a20c-3d39463dea5f");
 
 SELECT * from tbl_usuario;
 
@@ -271,38 +271,38 @@ INSERT INTO tbl_avaliacao (idProfissional, idUsuario, estrelas) VALUES
 
 ## SELECTS
 
-select * from tbl_usuario;
+#select * from tbl_usuario;
 #select * from tbl_profissional;
 #SELECT categoria, profissao from tbl_tipoServico where categoria = 'Construção e Reparos';
 #select * from tbl_tipoServico where categoria = 'Construção e Reparos' and profissao like '%pedreiro%' order by id desc;
 #select * from tbl_avaliacao where idProfissional = 1;
 
 ## SELECT LOGIN
-select u.id, u.nome, u.email, u.ativo, u.endBairro, u.endCep, u.endCidade, u.foto,
-u.endEstado, u.endNum, u.endRua, u.dtNascimento, u.telCell, u.telFixo, u.email,
-p.idProfissional, p.descricao, p.dtExperiencia, p.formacao, p.idProfissao, u.ativo,
-s.categoria, s.profissao,
-count(a.id) as qntAv, round(avg(a.estrelas)) as estrelas
-from tbl_usuario u
-left outer join tbl_profissional p on u.id = p.idUsuario 
-left outer join tbl_avaliacao a on p.idProfissional = a.idProfissional
-left outer join tbl_tipoServico s on s.id = p.idProfissao
+#select u.id, u.nome, u.email, u.ativo, u.endBairro, u.endCep, u.endCidade, u.foto,
+#u.endEstado, u.endNum, u.endRua, u.dtNascimento, u.telCell, u.telFixo, u.email,
+#p.idProfissional, p.descricao, p.dtExperiencia, p.formacao, p.idProfissao, u.ativo,
+#s.categoria, s.profissao,
+#count(a.id) as qntAv, round(avg(a.estrelas)) as estrelas
+#from tbl_usuario u
+#left outer join tbl_profissional p on u.id = p.idUsuario 
+#left outer join tbl_avaliacao a on p.idProfissional = a.idProfissional
+#left outer join tbl_tipoServico s on s.id = p.idProfissao
 #where email = 'talis@talis.com' and senha ='123456'
-group by u.id;
+#group by u.id;
 
 
 ## SELECT BUSCA DE PROFISSIONAIS POR categoria/pesquisa 
-SELECT p.idProfissional, p.idUsuario, p.dtExperiencia, p.descricao, 
-u.nome, u.endCidade, u.endEstado, 
-s.profissao, s.categoria,
-ROUND(avg(a.estrelas)) AS estrelas, COUNT(a.id) AS qntAv
-FROM tbl_profissional p
-INNER JOIN tbl_usuario u ON u.id = p.idUsuario
-INNER JOIN tbl_tipoServico s ON s.id = p.idProfissao 
-LEFT OUTER JOIN tbl_avaliacao a on p.idProfissional = a.idProfissional
-WHERE s.categoria = 'Construção e Reparos' #AND p.idUsuario <> 3 	## <> do id do user logado (caso ele seja um profissional)
-group by p.idProfissional
-order by dtExperiencia asc
-;
+#SELECT p.idProfissional, p.idUsuario, p.dtExperiencia, p.descricao, 
+#u.nome, u.endCidade, u.endEstado, 
+#s.profissao, s.categoria,
+#ROUND(avg(a.estrelas)) AS estrelas, COUNT(a.id) AS qntAv
+#FROM tbl_profissional p
+#INNER JOIN tbl_usuario u ON u.id = p.idUsuario
+#INNER JOIN tbl_tipoServico s ON s.id = p.idProfissao 
+#LEFT OUTER JOIN tbl_avaliacao a on p.idProfissional = a.idProfissional
+#WHERE s.categoria = 'Construção e Reparos' #AND p.idUsuario <> 3 	## <> do id do user logado (caso ele seja um profissional)
+#group by p.idProfissional
+#order by dtExperiencia asc
+#;
 
 #####
