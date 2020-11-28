@@ -43,7 +43,7 @@ public class ListServices extends AppCompatActivity {
     private OnClickProfissional listener;
     private Intent it;
     private Context context;
-    private int idUser;
+    private Cliente cli;
 
     private CrudUser crudUser;
     private TipoServico tipoServico;
@@ -70,7 +70,7 @@ public class ListServices extends AppCompatActivity {
 
         proListMelhorAv = (List<Cliente>) getIntent().getSerializableExtra(ClassesConstants.PROFISSIONAL_LIST);
         tipoServico = (TipoServico) getIntent().getSerializableExtra(ClassesConstants.TIPO_SERVICO);
-        idUser = getIntent().getExtras().getInt(InfosLoginConstants.ID_USER);
+        cli = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
         String busca = getIntent().getExtras().getString(LoadingConstants.BUSCA);
 
         if (tipoServico.getCategoria().equals("vazio")) {
@@ -84,8 +84,8 @@ public class ListServices extends AppCompatActivity {
             @Override
             public void onClickProfissional(Cliente pro) {
                 it = new Intent(context, DetailsProfissional.class);
-                it.putExtra(InfosLoginConstants.ID_USER, idUser);
-                it.putExtra(ClassesConstants.CLIENTE, pro);
+                it.putExtra(ClassesConstants.CLIENTE, cli);
+                it.putExtra(ClassesConstants.PROFISSIONAL, pro);
                 startActivity(it);
             }
         };

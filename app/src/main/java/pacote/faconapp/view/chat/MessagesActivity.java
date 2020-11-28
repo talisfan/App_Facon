@@ -38,6 +38,7 @@ import java.util.List;
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
 import pacote.faconapp.adapter.ChatApplication;
+import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.view.MainActivity;
@@ -68,7 +69,7 @@ public class MessagesActivity extends AppCompatActivity {
                 Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
 
                 MessagesActivity.ContactItem contactItem = (MessagesActivity.ContactItem) item;
-                intent.putExtra("user", contactItem.contact);
+                intent.putExtra(ClassesConstants.PROFISSIONAL, contactItem.contact);
                 startActivity(intent);
             }
         });

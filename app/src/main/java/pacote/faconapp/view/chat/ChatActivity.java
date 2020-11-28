@@ -35,6 +35,7 @@ import java.util.List;
 
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
+import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.constants.ExceptionsServer;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
@@ -46,6 +47,8 @@ public class ChatActivity extends AppCompatActivity {
     private GroupAdapter adapter;
     private ContatosFb user;
     private UserFireBase me;
+    private String fromId;
+    private String toId;
 
     private EditText editChat;
 
@@ -67,7 +70,10 @@ public class ChatActivity extends AppCompatActivity {
             alertD.setMessage(ex.getMessage());
         }
 
-        user = (ContatosFb) getIntent().getExtras().getSerializable("user");
+        user = (ContatosFb) getIntent().getExtras().getSerializable(ClassesConstants.PROFISSIONAL);
+
+        fromId = FirebaseAuth.getInstance().getUid();
+        toId = user.getContato();
 
         RecyclerView rv = findViewById(R.id.recycler_chat);
         editChat = findViewById(R.id.edit_chat);
@@ -99,9 +105,6 @@ public class ChatActivity extends AppCompatActivity {
     private void fetchMessages() {
         if (me != null) {
 
-            String fromId = me.getUuid();
-            String toId = user.getContato();
-
             FirebaseFirestore.getInstance().collection("/conversations")
                     .document(fromId)
                     .collection(toId)
@@ -128,9 +131,6 @@ public class ChatActivity extends AppCompatActivity {
         String text = editChat.getText().toString();
 
         editChat.setText(null);
-
-        final String fromId = FirebaseAuth.getInstance().getUid();
-        final String toId = user.getContato();
         long timestamp = System.currentTimeMillis();
 
         final Message message = new Message();
@@ -213,8 +213,8 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public int getLayout() {
             return message.getFromId().equals(FirebaseAuth.getInstance().getUid())
-                    ? R.layout.item_from_message
-                    : R.layout.item_to_message;
+                    ? R.layout.item_to_message
+                    : R.layout.item_from_message;
         }
     }
 }

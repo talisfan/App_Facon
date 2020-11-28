@@ -158,7 +158,7 @@ public class FragmentHome extends Fragment implements View.OnClickListener {
                         }
                     }
                     it = new Intent(context, ListServices.class);
-                    it.putExtra(InfosLoginConstants.ID_USER, cli.getId());
+                    it.putExtra(ClassesConstants.CLIENTE, cli);
                     it.putExtra(ClassesConstants.TIPO_SERVICO, tipoServico);
                     it.putExtra(LoadingConstants.BUSCA, servicoPesq);
 
@@ -194,7 +194,7 @@ public class FragmentHome extends Fragment implements View.OnClickListener {
                 " AND u.ativo = 1 group by p.idProfissional order by estrelas desc");
         tipoServico.setProfissao("vazio");
         it.putExtra(LoadingConstants.BUSCA, categoria);
-        it.putExtra(InfosLoginConstants.ID_USER, cli.getId());
+        it.putExtra(ClassesConstants.CLIENTE, cli);
         it.putExtra(ClassesConstants.TIPO_SERVICO, tipoServico);
         startActivity(it);
     }

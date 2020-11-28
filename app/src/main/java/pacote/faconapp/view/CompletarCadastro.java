@@ -195,7 +195,7 @@ public class CompletarCadastro extends AppCompatActivity {
             if (mViewHolder.txtCep.getText().length() == 9) {
                 if (MetodosEstaticos.isConnected(context)) {
 
-                    Toast.makeText(this, "Buscando cep...", Toast.LENGTH_SHORT).show();
+                    MetodosEstaticos.snackMsg(v, "Buscando cep...");
                     cep = mViewHolder.txtCep.getText().toString().replace("-", "");
                     Call<Cep> call = this.mServiceCep.buscaCep(cep);
                     //enqueue aguarda a resposta sem travar user
@@ -205,9 +205,9 @@ public class CompletarCadastro extends AppCompatActivity {
                             //Sucesso na requisição (mesmo que retorno seja de erro. ex: 404)
                             Cep listEnd = response.body();
                             if (listEnd != null && listEnd.getEndRua() != null) {
-                                MetodosEstaticos.toastMsg(context, "Pronto !");
+                                MetodosEstaticos.snackMsg(v, "Pronto !");
                             } else {
-                                MetodosEstaticos.toastMsg(context, "Cep não encontrado !");
+                                MetodosEstaticos.snackMsg(v, "Cep não encontrado !");
                             }
                             mViewHolder.txtRua.setText(listEnd.getEndRua());
                             mViewHolder.txtCidade.setText(listEnd.getEndCidade());
@@ -252,6 +252,7 @@ public class CompletarCadastro extends AppCompatActivity {
 
             ValidarCompletarCad validar = new ValidarCompletarCad();
             if (validar.validarCompletarCad(user, context)) {
+                MetodosEstaticos.toastMsg(context, "Carregando...");
                 savePhotoFb();
             }
         } catch (Exception ex) {
@@ -281,7 +282,7 @@ public class CompletarCadastro extends AppCompatActivity {
                             public void onSuccess(Uri uri) {
 
                                 String uid = FirebaseAuth.getInstance().getUid();
-                                String username = user.getEmail();
+                                String username = user.getNome();
                                 String profileUrl = uri.toString();
 
                                 user.setFoto(profileUrl);
