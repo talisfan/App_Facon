@@ -1,11 +1,20 @@
 package pacote.faconapp.view.chat;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,11 +41,14 @@ import com.xwray.groupie.Item;
 import com.xwray.groupie.ViewHolder;
 
 import java.util.List;
+import java.util.Random;
 
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
 import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.constants.ExceptionsServer;
+import pacote.faconapp.listener.mask.Mascaras;
+import pacote.faconapp.model.dominio.entidades.Cliente;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.model.dominio.entidades.chat.Message;
@@ -49,8 +61,9 @@ public class ChatActivity extends AppCompatActivity {
     private UserFireBase me;
     private String fromId;
     private String toId;
-
+    private Context context;
     private EditText editChat;
+    private Cliente cli;
 
 
     @Override
@@ -60,17 +73,21 @@ public class ChatActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
+        context = this;
 
-        try{
-            if(MetodosEstaticos.isConnected(this)){ throw new Exception(ExceptionsServer.NO_CONNECTION); }
+        try {
+            if (MetodosEstaticos.isConnected(this)) {
+                throw new Exception(ExceptionsServer.NO_CONNECTION);
+            }
             MetodosEstaticos.testDateHourAutomatic(this);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             AlertDialog.Builder alertD = new AlertDialog.Builder(this);
             alertD.setTitle("Erro");
             alertD.setMessage(ex.getMessage());
         }
 
         user = (ContatosFb) getIntent().getExtras().getSerializable(ClassesConstants.PROFISSIONAL);
+        cli = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
 
         fromId = FirebaseAuth.getInstance().getUid();
         toId = user.getContato();
@@ -115,7 +132,7 @@ public class ChatActivity extends AppCompatActivity {
                             List<DocumentChange> documentChanges = queryDocumentSnapshots.getDocumentChanges();
 
                             if (documentChanges != null) {
-                                for (DocumentChange doc: documentChanges) {
+                                for (DocumentChange doc : documentChanges) {
                                     if (doc.getType() == DocumentChange.Type.ADDED) {
                                         Message message = doc.getDocument().toObject(Message.class);
                                         adapter.add(new MessageItem(message));
@@ -200,6 +217,23 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public void bind(@NonNull ViewHolder viewHolder, int position) {
             TextView txtMsg = viewHolder.itemView.findViewById(R.id.txt_msg);
+
+            Random ramdom = new Random();
+            txtMsg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder alertD = new AlertDialog.Builder(context);
+                    String a = "pRop201s";
+                    a += String.valueOf(Long.toHexString(ramdom.nextLong()));
+                    a += String.valueOf(Long.toHexString(ramdom.nextLong()));
+                    // string a.length = 40
+
+
+                    alertD.setMessage("Teste " + txtMsg.getText().toString() + " \n" + a);
+                    alertD.show();
+                }
+            });
+
             ImageView imgMessage = viewHolder.itemView.findViewById(R.id.img_message_user);
 
             txtMsg.setText(message.getText());
@@ -216,5 +250,51 @@ public class ChatActivity extends AppCompatActivity {
                     ? R.layout.item_to_message
                     : R.layout.item_from_message;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (cli.getIdProfissional() != 0) {
+            getMenuInflater().inflate(R.menu.menu_chat_profissional, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (cli.getIdProfissional() != 0) {
+            if (item.getItemId() == R.id.contacts) {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View vDialog = inflater.inflate(R.layout.dialog_proposta, null);
+
+                final EditText txtInst = vDialog.findViewById(R.id.txtInst);
+                final EditText txtCurso = vDialog.findViewById(R.id.txtCurso);
+                final EditText txtDtInicio = vDialog.findViewById(R.id.txtDtInicio);
+                final EditText txtDtFim = vDialog.findViewById(R.id.txtDtFim);
+                final Spinner spinner = vDialog.findViewById(R.id.spinner);
+
+                Mascaras maskDtInicio = new Mascaras("##/####", txtDtInicio);
+                txtDtInicio.addTextChangedListener(maskDtInicio);
+
+                Mascaras maskDtFim = new Mascaras("##/####", txtDtFim);
+                txtDtFim.addTextChangedListener(maskDtFim);
+
+                String[] items = new String[]{"Graduação", "Pós-graduação", "Técnico", "Curso complementar"};
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, items);
+                spinner.setAdapter(adapter);
+
+                AlertDialog.Builder alertD = new AlertDialog.Builder(context);
+                alertD.setView(vDialog);
+                alertD.setNegativeButton("CANCELAR", null);
+                alertD.setPositiveButton("SALVAR", new Dialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

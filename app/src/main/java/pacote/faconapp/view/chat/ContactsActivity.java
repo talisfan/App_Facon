@@ -31,6 +31,7 @@ import java.util.List;
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
 import pacote.faconapp.constants.ClassesConstants;
+import pacote.faconapp.model.dominio.entidades.Cliente;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.model.dominio.entidades.chat.UserFireBase;
 
@@ -39,6 +40,7 @@ public class ContactsActivity extends AppCompatActivity {
     private GroupAdapter adapter;
     private Context context;
     private String userUid;
+    private Cliente cli;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class ContactsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
+        cli = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
 
         RecyclerView rv = findViewById(R.id.recycler);
         context = this;
@@ -63,6 +66,7 @@ public class ContactsActivity extends AppCompatActivity {
 
                 UserItem userItem = (UserItem) item;
                 intent.putExtra(ClassesConstants.PROFISSIONAL, userItem.user);
+                intent.putExtra(ClassesConstants.CLIENTE, cli);
                 startActivity(intent);
             }
         });

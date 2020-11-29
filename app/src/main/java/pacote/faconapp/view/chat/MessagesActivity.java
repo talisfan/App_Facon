@@ -39,6 +39,7 @@ import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
 import pacote.faconapp.adapter.ChatApplication;
 import pacote.faconapp.constants.ClassesConstants;
+import pacote.faconapp.model.dominio.entidades.Cliente;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.view.MainActivity;
@@ -47,6 +48,7 @@ public class MessagesActivity extends AppCompatActivity {
 
     private GroupAdapter adapter;
     private Context context;
+    private Cliente cli;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class MessagesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
         context = this;
+        cli = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
 
         RecyclerView rv = findViewById(R.id.recycler_contact);
         rv.setLayoutManager(new LinearLayoutManager(context));
@@ -70,6 +73,7 @@ public class MessagesActivity extends AppCompatActivity {
 
                 ContactItem contactItem = (ContactItem) item;
                 intent.putExtra(ClassesConstants.PROFISSIONAL, contactItem.contact);
+                intent.putExtra(ClassesConstants.CLIENTE, cli);
                 startActivity(intent);
             }
         });
@@ -113,6 +117,7 @@ public class MessagesActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.contacts:
                 Intent intent = new Intent(MessagesActivity.this, ContactsActivity.class);
+                intent.putExtra(ClassesConstants.CLIENTE, cli);
                 startActivity(intent);
                 break;
         }
