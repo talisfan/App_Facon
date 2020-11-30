@@ -16,15 +16,11 @@ exports.criarProposta = (req, res, next) => {
     (descricao = req.body.descricao),
   ];
 
-  console.log("recebendo req");
-
   mysql.getConnection((error, conn) => {
     if (error) {
-      console.log("Erro ao conectar com banco");
-      console.log(error);
       return res.status(400).send({
         error: "true",
-        msg: error
+        msg: error,
       });
     } else {
       conn.query(
@@ -34,15 +30,13 @@ exports.criarProposta = (req, res, next) => {
         (error, result, field) => {
           conn.release();
 
-          console.log("Result")
+          console.log("Result");
           console.log(result);
 
-          if (error) {          
-            console.log("Erro ao fazer req no banco");
-            console.log(error);  
+          if (error) {
             return res.status(400).send({
               error: "true",
-              msg: error,
+              msg: error.sqlMessage,
             });
           }
 
@@ -57,7 +51,6 @@ exports.criarProposta = (req, res, next) => {
               msg: "Erro ao cadastrar proposta.",
             });
           }
-          
         }
       );
     }
@@ -65,12 +58,14 @@ exports.criarProposta = (req, res, next) => {
 };
 
 exports.getProposta = (req, res, next) => {
+  let token = req.query.token;
+  let idFb = req.query.idFb;
 
-  let token = req.params.token; 
-  let idFb = req.params.idFb;  
+  console.log(token, idFb);
 
   mysql.getConnection((error, conn) => {
     if (error) {
+      console.log(error);
       return res.status(400).send({
         error: "true",
         msg: "Error 400. " + error,
@@ -79,25 +74,31 @@ exports.getProposta = (req, res, next) => {
       conn.query(
         "SELECT * FROM tbl_proposta WHERE token = ?;",
 
-        [ token ],
+        [token],
 
         (error, result, field) => {
           conn.release();
 
           if (error) {
+            console.log(error);
             return res.status(500).send({
               error: "true",
-              msg: error,
+              msg: error.sqlMessage,
             });
           }
 
-          if(result[0].idFbCliente != idFb && result[0].idFbPrestador != idFb){
-            return res.status(401).send({
+          console.log(result);
+          if (result) {
+            if (
+              result[0].idFbCliente != idFb &&
+              result[0].idFbPrestador != idFb
+            ) {
+              return res.status(401).send({
                 error: "true",
                 msg: "Você não tem acesso há essa proposta.",
               });
+            }
           }
-
           if (result.length > 0) {
             return res.status(200).send({
               error: "true",
@@ -110,50 +111,46 @@ exports.getProposta = (req, res, next) => {
       );
     }
   });
-}
+};
 
 exports.updateProposta = (req, res, next) => {
+  let dados = [req.body.statusProp, req.body.token];
 
-    let dados = [
-        req.body.statusProp,
-        req.body.token
-    ];
-
-    mysql.getConnection((error, conn) => {
-        if (error) {
-          return res.status(400).send({
-            error: "true",
-            msg: error,
-          });
-        } else {
-          conn.query(
-            "UPDATE tbl_proposta SET statusProp = ? WHERE token = ?;",
-
-            dados,
-    
-            (error, result, field) => {
-              conn.release();
-    
-              if (error) {
-                return res.status(400).send({
-                  error: "true",
-                  msg: error,
-                });
-              }
-    
-              if (result.changedRows == 0) {
-                return res.send({
-                  error: "true",
-                  msg: "Nenhum registro alterado.",
-                });
-              } else {
-                return res.status(200).send({
-                  error: "false",
-                  msg: "Success",
-                });
-              }
-            }
-          );
-        }
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      return res.status(400).send({
+        error: "true",
+        msg: error,
       });
+    } else {
+      conn.query(
+        "UPDATE tbl_proposta SET statusProp = ? WHERE token = ?;",
+
+        dados,
+
+        (error, result, field) => {
+          conn.release();
+
+          if (error) {
+            return res.status(400).send({
+              error: "true",
+              msg: error,
+            });
+          }
+
+          if (result.changedRows == 0) {
+            return res.send({
+              error: "true",
+              msg: "Nenhum registro alterado.",
+            });
+          } else {
+            return res.status(200).send({
+              error: "false",
+              msg: "Success",
+            });
+          }
+        }
+      );
+    }
+  });
 };
