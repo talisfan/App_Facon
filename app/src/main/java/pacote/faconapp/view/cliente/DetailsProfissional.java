@@ -1,5 +1,6 @@
 package pacote.faconapp.view.cliente;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,7 +19,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
@@ -25,6 +31,7 @@ import com.xwray.groupie.ViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 import pacote.faconapp.MetodosEstaticos;
@@ -45,6 +52,7 @@ public class DetailsProfissional extends AppCompatActivity {
     private ViewHolder mViewHolder = new ViewHolder();
     private Cliente profissionalDetails;
     private Cliente cli;
+    private Context context;
 
     @Override
 
@@ -54,6 +62,7 @@ public class DetailsProfissional extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
+        context = this;
         alertD = new AlertDialog.Builder(this);
 
         mViewHolder.nome = findViewById(R.id.lblNomePro);
@@ -136,30 +145,62 @@ public class DetailsProfissional extends AppCompatActivity {
 
     public void btnChat(View v){
 
-        // adicionando usuario aos contatos do profissional
-        ContatosFb us = new ContatosFb(profissionalDetails.getIdFb(), cli.getNome(), cli.getFoto(), FirebaseAuth.getInstance().getUid());
-
-        FirebaseFirestore.getInstance().collection("contatos")
-                .document(UUID.randomUUID().toString())
-                .set(us)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        //verificando se contato já existe
+        FirebaseFirestore.getInstance().collection("/contatos")
+                .whereEqualTo("idUser", FirebaseAuth.getInstance().getUid())
+                .whereEqualTo("contato", profissionalDetails.getIdFb())
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException ex) {
+                        if (ex != null) {
+                            MetodosEstaticos.toastMsg(context, ex.getMessage());
+                            return;
+                        }
 
-                        ContatosFb user = new ContatosFb(FirebaseAuth.getInstance().getUid(), profissionalDetails.getNome(), profissionalDetails.getFoto(), profissionalDetails.getIdFb());
+                        List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
 
-                        // adicionando profissional aos contatos do user logado
-                        FirebaseFirestore.getInstance().collection("contatos")
-                                .document(UUID.randomUUID().toString())
-                                .set(user)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Intent intent = new Intent(DetailsProfissional.this, ChatActivity.class);
-                                        intent.putExtra(ClassesConstants.PROFISSIONAL, user);
-                                        startActivity(intent);
-                                    }
-                                });
+                        // verificando profissional ja existe na lista de contatos
+                        if(docs.size() > 0) {
+                            for (DocumentSnapshot doc : docs) {
+                                ContatosFb user = doc.toObject(ContatosFb.class);
+
+                                if (user != null && user.getContato().equals(profissionalDetails.getIdFb())) {
+                                    Intent intent = new Intent(DetailsProfissional.this, ChatActivity.class);
+                                    ContatosFb pro = new ContatosFb(FirebaseAuth.getInstance().getUid(), profissionalDetails.getNome(), profissionalDetails.getFoto(), profissionalDetails.getIdFb());
+                                    intent.putExtra(ClassesConstants.PROFISSIONAL, pro);
+                                    intent.putExtra(ClassesConstants.CLIENTE, cli);
+                                    startActivity(intent);
+                                }
+                            }
+                        }else{
+                            // adicionando usuario aos contatos do profissional
+                            ContatosFb us = new ContatosFb(profissionalDetails.getIdFb(), cli.getNome(), cli.getFoto(), FirebaseAuth.getInstance().getUid());
+
+                            FirebaseFirestore.getInstance().collection("contatos")
+                                    .document(UUID.randomUUID().toString())
+                                    .set(us)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            ContatosFb user = new ContatosFb(FirebaseAuth.getInstance().getUid(), profissionalDetails.getNome(), profissionalDetails.getFoto(), profissionalDetails.getIdFb());
+
+                                            // adicionando profissional aos contatos do user logado
+                                            FirebaseFirestore.getInstance().collection("contatos")
+                                                    .document(UUID.randomUUID().toString())
+                                                    .set(user)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Intent intent = new Intent(DetailsProfissional.this, ChatActivity.class);
+                                                            intent.putExtra(ClassesConstants.PROFISSIONAL, user);
+                                                            intent.putExtra(ClassesConstants.CLIENTE, cli);
+                                                            startActivity(intent);
+                                                        }
+                                                    });
+                                        }
+                                    });
+                        }
                     }
                 });
     }

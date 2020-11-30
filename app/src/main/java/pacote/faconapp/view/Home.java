@@ -59,6 +59,7 @@ public class Home extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent it = new Intent(context, MessagesActivity.class);
+                    it.putExtra(ClassesConstants.CLIENTE, cli);
                     startActivity(it);
                 }
             });

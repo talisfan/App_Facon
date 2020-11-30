@@ -46,7 +46,9 @@ import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.constants.ExceptionsServer;
 import pacote.faconapp.controller.ValidarProposta;
 import pacote.faconapp.listener.mask.Mascaras;
+import pacote.faconapp.model.data.ApiDb;
 import pacote.faconapp.model.dominio.crud.CrudProposta;
+import pacote.faconapp.model.dominio.crud.CrudUser;
 import pacote.faconapp.model.dominio.entidades.Cliente;
 import pacote.faconapp.model.dominio.entidades.Proposta;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
@@ -81,6 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
         context = this;
         alertD = new AlertDialog.Builder(context);
+        crudProposta = ApiDb.createService(CrudProposta.class);
 
         try {
             if (MetodosEstaticos.isConnected(this)) {
@@ -247,14 +250,14 @@ public class ChatActivity extends AppCompatActivity {
                                     }
 
                                     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                    View vDialog = inflater.inflate(R.layout.dialog_formacao, null);
+                                    View vDialog = inflater.inflate(R.layout.dialog_proposta, null);
 
                                     final TextView lblPrestador = vDialog.findViewById(R.id.lblPrestador);
                                     final TextView lblCliente = vDialog.findViewById(R.id.lblCliente);
                                     final TextView lblStatus = vDialog.findViewById(R.id.lblStatus);
                                     final EditText txtDtInicio = vDialog.findViewById(R.id.txtDtInicio);
                                     final EditText txtDtFim = vDialog.findViewById(R.id.txtDtFim);
-                                    final EditText txtValor = vDialog.findViewById(R.id.txtValor);
+                                    final EditText txtValor = vDialog.findViewById(R.id.txtValorServ);
                                     final EditText txtLocal = vDialog.findViewById(R.id.txtLocal);
                                     final EditText txtDesc = vDialog.findViewById(R.id.txtDesc);
                                     final Spinner spinnerFormaPag = vDialog.findViewById(R.id.spinnerFormaPag);
@@ -338,13 +341,13 @@ public class ChatActivity extends AppCompatActivity {
                                     alertD.show();
 
                                 }catch (Exception ex){
-                                    MetodosEstaticos.snackMsg(v, ex.getMessage());
+                                    MetodosEstaticos.toastMsg(context, ex.getMessage());
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Proposta> call, Throwable t) {
-                                MetodosEstaticos.snackMsg(v, t.getMessage());
+                                MetodosEstaticos.toastMsg(context, t.getMessage());
                             }
                         });
                     }
@@ -380,17 +383,17 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (cli.getIdProfissional() != 0) {
-            if (item.getItemId() == R.id.contacts) {
+            if (item.getItemId() == R.id.fazerProposta) {
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View vDialog = inflater.inflate(R.layout.dialog_formacao, null);
+                View vDialog = inflater.inflate(R.layout.dialog_proposta, null);
 
                 final TextView lblPrestador = vDialog.findViewById(R.id.lblPrestador);
                 final TextView lblCliente = vDialog.findViewById(R.id.lblCliente);
                 final TextView lblStatus = vDialog.findViewById(R.id.lblStatus);
                 final EditText txtDtInicio = vDialog.findViewById(R.id.txtDtInicio);
                 final EditText txtDtFim = vDialog.findViewById(R.id.txtDtFim);
-                final EditText txtValor = vDialog.findViewById(R.id.txtValor);
+                final EditText txtValor = vDialog.findViewById(R.id.txtValorServ);
                 final EditText txtLocal = vDialog.findViewById(R.id.txtLocal);
                 final EditText txtDesc = vDialog.findViewById(R.id.txtDesc);
                 final Spinner spinnerFormaPag = vDialog.findViewById(R.id.spinnerFormaPag);
@@ -407,6 +410,9 @@ public class ChatActivity extends AppCompatActivity {
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, items);
                 spinnerFormaPag.setAdapter(adapter);
 
+                lblCliente.setText("Cliente: " + user.getUsername());
+                lblPrestador.setText("Prestador: " + cli.getNome());
+
                 alertD.setView(vDialog);
                 alertD.setNegativeButton("CANCELAR", null);
                 alertD.setPositiveButton("ENVIAR", new Dialog.OnClickListener() {
@@ -421,8 +427,8 @@ public class ChatActivity extends AppCompatActivity {
                             }catch (Exception ex){
                                 throw new Exception("Erro ao converter valor do serviço.");
                             }
-                            Proposta proposta = new Proposta(user.getContato(), user.getUsername(), FirebaseAuth.getInstance().getUid(),
-                                    cli.getNome(),"PENDENTE", txtDtInicio.getText().toString(),
+                            Proposta proposta = new Proposta( FirebaseAuth.getInstance().getUid(),
+                                    cli.getNome(), user.getContato(), user.getUsername(), "PENDENTE", txtDtInicio.getText().toString(),
                                     txtDtFim.getText().toString(), valor, spinnerFormaPag.getSelectedItem().toString(),
                                     txtLocal.getText().toString(), txtDesc.getText().toString());
 
@@ -432,7 +438,7 @@ public class ChatActivity extends AppCompatActivity {
 
                                 try {
                                     proposta.setDtInicio(MetodosEstaticos.convertDateBrForIn(txtDtInicio.getText().toString()));
-                                    proposta.setDtInicio(MetodosEstaticos.convertDateBrForIn(txtDtFim.getText().toString()));
+                                    proposta.setDtFim(MetodosEstaticos.convertDateBrForIn(txtDtFim.getText().toString()));
                                 }catch (Exception ex){
                                     throw new Exception("Erro na conversão de datas.");
                                 }
@@ -467,12 +473,12 @@ public class ChatActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onFailure(Call<Proposta> call, Throwable t) {
-                                        MetodosEstaticos.snackMsg(vDialog, t.getMessage());
+                                        MetodosEstaticos.toastMsg(context, t.getMessage());
                                     }
                                 });
                             }
                         } catch (Exception ex) {
-                            MetodosEstaticos.snackMsg(vDialog, ex.getMessage());
+                            MetodosEstaticos.toastMsg(context, ex.getMessage());
                         }
                     }
                 });

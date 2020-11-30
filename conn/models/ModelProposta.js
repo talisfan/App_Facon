@@ -9,18 +9,22 @@ exports.criarProposta = (req, res, next) => {
     (idFbCliente = req.body.idFbCliente),
     (statusProp = req.body.statusProp),
     (dtInicio = req.body.dtInicio),
-    (dtfim = req.body.dtfim),
+    (dtFim = req.body.dtFim),
     (valor = req.body.valor),
     (formaPag = req.body.formaPag),
     (localServ = req.body.localServ),
     (descricao = req.body.descricao),
   ];
 
+  console.log("recebendo req");
+
   mysql.getConnection((error, conn) => {
     if (error) {
+      console.log("Erro ao conectar com banco");
+      console.log(error);
       return res.status(400).send({
         error: "true",
-        msg: error,
+        msg: error
       });
     } else {
       conn.query(
@@ -30,7 +34,12 @@ exports.criarProposta = (req, res, next) => {
         (error, result, field) => {
           conn.release();
 
-          if (error) {
+          console.log("Result")
+          console.log(result);
+
+          if (error) {          
+            console.log("Erro ao fazer req no banco");
+            console.log(error);  
             return res.status(400).send({
               error: "true",
               msg: error,
@@ -48,6 +57,7 @@ exports.criarProposta = (req, res, next) => {
               msg: "Erro ao cadastrar proposta.",
             });
           }
+          
         }
       );
     }

@@ -42,6 +42,7 @@ public class Proposta {
         this.cliente = cliente;
         this.status = status;
         this.dtInicio = dtInicio;
+        this.dtFim = dtFim;
         this.valor = valor;
         this.formaPag = formaPag;
         this.local = local;
