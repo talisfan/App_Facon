@@ -106,6 +106,7 @@
     <!-- Alert Dialog Proposta de Serviço -->
     <string name="alert_proposta_title">PROPOSTA DE SERVIÇO</string>
     <string name="alert_proposta_dt_inicio">Data de início:</string>
+    <string name="alert_proposta_dt_fim">Data de Finalização:</string>
     <string name="alert_proposta_hint_data">dd/mm/aaaa</string>
     <string name="alert_proposta_valor">Valor do Serviço. R$:</string>
     <string name="alert_proposta_forma_pagamento">Forma de Pagamento</string>

@@ -1,11 +1,10 @@
 package pacote.faconapp.view.chat;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,15 +15,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -44,15 +40,22 @@ import java.util.List;
 import java.util.Random;
 
 import pacote.faconapp.MetodosEstaticos;
+import pacote.faconapp.MoneyTextWatcher;
 import pacote.faconapp.R;
 import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.constants.ExceptionsServer;
+import pacote.faconapp.controller.ValidarProposta;
 import pacote.faconapp.listener.mask.Mascaras;
+import pacote.faconapp.model.dominio.crud.CrudProposta;
 import pacote.faconapp.model.dominio.entidades.Cliente;
+import pacote.faconapp.model.dominio.entidades.Proposta;
 import pacote.faconapp.model.dominio.entidades.chat.Contact;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.model.dominio.entidades.chat.Message;
 import pacote.faconapp.model.dominio.entidades.chat.UserFireBase;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -64,6 +67,9 @@ public class ChatActivity extends AppCompatActivity {
     private Context context;
     private EditText editChat;
     private Cliente cli;
+    private CrudProposta crudProposta;
+    private AlertDialog.Builder alertD;
+    String msgProposta = "Clique aqui para visualizar a proposta: ";
 
 
     @Override
@@ -74,6 +80,7 @@ public class ChatActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.ic_logo_blue);
         context = this;
+        alertD = new AlertDialog.Builder(context);
 
         try {
             if (MetodosEstaticos.isConnected(this)) {
@@ -99,7 +106,7 @@ public class ChatActivity extends AppCompatActivity {
         btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMessage();
+                sendMessage(editChat.getText().toString());
             }
         });
 
@@ -144,8 +151,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void sendMessage() {
-        String text = editChat.getText().toString();
+    private void sendMessage(String text) {
 
         editChat.setText(null);
         long timestamp = System.currentTimeMillis();
@@ -218,19 +224,130 @@ public class ChatActivity extends AppCompatActivity {
         public void bind(@NonNull ViewHolder viewHolder, int position) {
             TextView txtMsg = viewHolder.itemView.findViewById(R.id.txt_msg);
 
-            Random ramdom = new Random();
             txtMsg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder alertD = new AlertDialog.Builder(context);
-                    String a = "pRop201s";
-                    a += String.valueOf(Long.toHexString(ramdom.nextLong()));
-                    a += String.valueOf(Long.toHexString(ramdom.nextLong()));
-                    // string a.length = 40
 
+                    if(txtMsg.getText().toString().contains("pRop201s")){
 
-                    alertD.setMessage("Teste " + txtMsg.getText().toString() + " \n" + a);
-                    alertD.show();
+                        String token = txtMsg.getText().toString().replace(msgProposta, "");
+                        Call<Proposta> call = crudProposta.getProposta(token);
+                        call.enqueue(new Callback<Proposta>() {
+                            @SuppressLint("ResourceAsColor")
+                            @Override
+                            public void onResponse(Call<Proposta> call, Response<Proposta> response) {
+                                Proposta proposta = response.body();
+
+                                try {
+                                    if (proposta == null) {
+                                        throw new Exception("Falha ao receber resposta do servidor.");
+                                    }
+                                    if (proposta.error != null && proposta.error.equals("true")) {
+                                        throw new Exception(proposta.msg);
+                                    }
+
+                                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                    View vDialog = inflater.inflate(R.layout.dialog_formacao, null);
+
+                                    final TextView lblPrestador = vDialog.findViewById(R.id.lblPrestador);
+                                    final TextView lblCliente = vDialog.findViewById(R.id.lblCliente);
+                                    final TextView lblStatus = vDialog.findViewById(R.id.lblStatus);
+                                    final EditText txtDtInicio = vDialog.findViewById(R.id.txtDtInicio);
+                                    final EditText txtDtFim = vDialog.findViewById(R.id.txtDtFim);
+                                    final EditText txtValor = vDialog.findViewById(R.id.txtValor);
+                                    final EditText txtLocal = vDialog.findViewById(R.id.txtLocal);
+                                    final EditText txtDesc = vDialog.findViewById(R.id.txtDesc);
+                                    final Spinner spinnerFormaPag = vDialog.findViewById(R.id.spinnerFormaPag);
+
+                                    Mascaras maskDtInicio = new Mascaras("##/##/####", txtDtInicio);
+                                    txtDtInicio.addTextChangedListener(maskDtInicio);
+                                    Mascaras maskDtFim = new Mascaras("##/##/####", txtDtFim);
+                                    txtDtFim.addTextChangedListener(maskDtFim);
+                                    // add formato moeda br
+                                    txtValor.addTextChangedListener(new MoneyTextWatcher(txtValor));
+
+                                    lblPrestador.setText(proposta.getPrestador());
+                                    lblCliente.setText(proposta.getCliente());
+
+                                    String status = proposta.getStatus();
+                                    lblStatus.setText(status);
+                                    switch (status){
+                                        case "PENDENTE":
+                                            lblStatus.setTextColor(R.color.yellow);
+                                            break;
+
+                                        case "CONCLUÍDO":
+                                            lblStatus.setTextColor(R.color.green);
+                                            break;
+
+                                        case "ACEITO":
+                                            lblStatus.setTextColor(R.color.blueBackGround);
+                                            break;
+
+                                        default:
+                                            lblStatus.setTextColor(R.color.danger);
+                                            break;
+                                    }
+
+                                    txtDtInicio.setText(MetodosEstaticos.convertDateInForBr(proposta.getDtInicio()));
+                                    txtDtFim.setText(MetodosEstaticos.convertDateInForBr(proposta.getDtFim()));
+                                    txtValor.setText(proposta.getValor().toString());
+                                    txtLocal.setText(proposta.getLocal());
+                                    txtDesc.setText(proposta.getDescricao());
+                                    String[] items = new String[]{ proposta.getFormaPag() };
+
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, items);
+                                    spinnerFormaPag.setAdapter(adapter);
+
+                                    alertD.setView(vDialog);
+                                    alertD.setNegativeButton("CANCELAR", null);
+
+                                    if(cli.getIdProfissional() == 0 && status.equals("PENDENTE")) {
+
+                                        alertD.setNeutralButton("RECUSAR", new Dialog.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                atualizarProposta(proposta.getToken(), "RECUSADO");
+                                            }
+                                        });
+
+                                        alertD.setPositiveButton("ACEITAR", new Dialog.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                atualizarProposta(proposta.getToken(), "ACEITO");
+                                            }
+                                        });
+
+                                    }else if(cli.getIdProfissional() == 0 && status.equals("ACEITO")) {
+                                        alertD.setNeutralButton("NÃO FEZ/TERMINOU", new Dialog.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                atualizarProposta(proposta.getToken(), "NÃO FEZ/TERMINOU");
+                                            }
+                                        });
+                                        alertD.setPositiveButton("CONCLUÍDO", new Dialog.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                atualizarProposta(proposta.getToken(), "CONCLUÍDO");
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        alertD.setNegativeButton("OK", null);
+                                    }
+                                    alertD.show();
+
+                                }catch (Exception ex){
+                                    MetodosEstaticos.snackMsg(v, ex.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Proposta> call, Throwable t) {
+                                MetodosEstaticos.snackMsg(v, t.getMessage());
+                            }
+                        });
+                    }
                 }
             });
 
@@ -266,35 +383,134 @@ public class ChatActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.contacts) {
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View vDialog = inflater.inflate(R.layout.dialog_proposta, null);
+                View vDialog = inflater.inflate(R.layout.dialog_formacao, null);
 
-                final EditText txtInst = vDialog.findViewById(R.id.txtInst);
-                final EditText txtCurso = vDialog.findViewById(R.id.txtCurso);
+                final TextView lblPrestador = vDialog.findViewById(R.id.lblPrestador);
+                final TextView lblCliente = vDialog.findViewById(R.id.lblCliente);
+                final TextView lblStatus = vDialog.findViewById(R.id.lblStatus);
                 final EditText txtDtInicio = vDialog.findViewById(R.id.txtDtInicio);
                 final EditText txtDtFim = vDialog.findViewById(R.id.txtDtFim);
-                final Spinner spinner = vDialog.findViewById(R.id.spinner);
+                final EditText txtValor = vDialog.findViewById(R.id.txtValor);
+                final EditText txtLocal = vDialog.findViewById(R.id.txtLocal);
+                final EditText txtDesc = vDialog.findViewById(R.id.txtDesc);
+                final Spinner spinnerFormaPag = vDialog.findViewById(R.id.spinnerFormaPag);
 
-                Mascaras maskDtInicio = new Mascaras("##/####", txtDtInicio);
+                Mascaras maskDtInicio = new Mascaras("##/##/####", txtDtInicio);
                 txtDtInicio.addTextChangedListener(maskDtInicio);
-
-                Mascaras maskDtFim = new Mascaras("##/####", txtDtFim);
+                Mascaras maskDtFim = new Mascaras("##/##/####", txtDtFim);
                 txtDtFim.addTextChangedListener(maskDtFim);
+                // add formato moeda br
+                txtValor.addTextChangedListener(new MoneyTextWatcher(txtValor));
 
-                String[] items = new String[]{"Graduação", "Pós-graduação", "Técnico", "Curso complementar"};
+                String[] items = new String[]{"Dinheiro", "Transferência (DOC/TED)", "Crédito", "Débito"};
+
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, items);
-                spinner.setAdapter(adapter);
+                spinnerFormaPag.setAdapter(adapter);
 
-                AlertDialog.Builder alertD = new AlertDialog.Builder(context);
                 alertD.setView(vDialog);
                 alertD.setNegativeButton("CANCELAR", null);
-                alertD.setPositiveButton("SALVAR", new Dialog.OnClickListener() {
+                alertD.setPositiveButton("ENVIAR", new Dialog.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            double valor;
+                            String dataInicio;
+                            String dataFim;
+                            try {
+                                valor = Double.parseDouble(MoneyTextWatcher.formatPriceSave(txtValor.getText().toString()));
+                            }catch (Exception ex){
+                                throw new Exception("Erro ao converter valor do serviço.");
+                            }
+                            Proposta proposta = new Proposta(user.getContato(), user.getUsername(), cli.getIdFb(), cli.getNome(),
+                                    "PENDENTE", txtDtInicio.getText().toString(), txtDtFim.getText().toString(), valor,
+                                    spinnerFormaPag.getSelectedItem().toString(),
+                                    txtLocal.getText().toString(), txtDesc.getText().toString());
 
+                            ValidarProposta validar = new ValidarProposta();
+
+                            if (validar.validarProposta(proposta)) {
+
+                                try {
+                                    proposta.setDtInicio(MetodosEstaticos.convertDateBrForIn(txtDtInicio.getText().toString()));
+                                    proposta.setDtInicio(MetodosEstaticos.convertDateBrForIn(txtDtFim.getText().toString()));
+                                }catch (Exception ex){
+                                    throw new Exception("Erro na conversão de datas.");
+                                }
+
+                                Random ramdom = new Random();
+                                String token = "pRop201s";
+                                token += String.valueOf(Long.toHexString(ramdom.nextLong()));
+                                token += String.valueOf(Long.toHexString(ramdom.nextLong()));
+                                // string a.length = 40
+
+                                proposta.setToken(token);
+
+                                Call<Proposta> call = crudProposta.criarProposta(proposta);
+                                call.enqueue(new Callback<Proposta>() {
+                                    @Override
+                                    public void onResponse(Call<Proposta> call, Response<Proposta> response) {
+                                        Proposta prop = response.body();
+                                        try {
+                                            if (prop == null) {
+                                                throw new Exception("Falha ao receber resposta do servidor.");
+                                            }
+                                            if (prop.error != null && prop.error.equals("true")) {
+                                                throw new Exception(prop.msg);
+                                            }
+                                            MetodosEstaticos.toastMsg(context, "Proposta enviada com sucesso!");
+                                            sendMessage(msgProposta + proposta.getToken());
+
+                                        }catch (Exception ex){
+                                            MetodosEstaticos.toastMsg(context, ex.getMessage());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Proposta> call, Throwable t) {
+                                        MetodosEstaticos.snackMsg(vDialog, t.getMessage());
+                                    }
+                                });
+                            }
+                        } catch (Exception ex) {
+                            MetodosEstaticos.snackMsg(vDialog, ex.getMessage());
+                        }
                     }
                 });
+                alertD.show();
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //idetifica se proposta foi atualizada ou nao
+    boolean flag = false;
+
+    public void atualizarProposta(String token, String status){
+
+        Call<Proposta> call = crudProposta.updateProposta(token, status);
+        call.enqueue(new Callback<Proposta>() {
+            @Override
+            public void onResponse(Call<Proposta> call, Response<Proposta> response) {
+                Proposta proposta = response.body();
+                try {
+                    if (proposta == null) {
+                        throw new Exception("Falha ao receber resposta do servidor.");
+                    }
+                    if (proposta.error != null && proposta.error.equals("true")) {
+                        throw new Exception(proposta.msg);
+                    }
+                    MetodosEstaticos.toastMsg(context, "Proposta atualizada com sucesso!");
+                    sendMessage(msgProposta + proposta.getToken());
+
+                }catch (Exception ex){
+                    MetodosEstaticos.toastMsg(context, ex.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Proposta> call, Throwable t) {
+                MetodosEstaticos.toastMsg(context, t.getMessage());
+            }
+        });
     }
 }

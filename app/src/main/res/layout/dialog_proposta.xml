@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/lblPrestador"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/lblCliente"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
@@ -40,7 +40,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/lblPrestador" />
 
     <TextView
         android:id="@+id/textView6"
@@ -52,10 +52,10 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/lblCliente" />
 
     <TextView
-        android:id="@+id/txtStatus"
+        android:id="@+id/lblStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -82,14 +82,37 @@
         android:id="@+id/txtDtInicio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
         android:hint="@string/alert_proposta_hint_data"
         android:inputType="number"
-        android:layout_marginRight="10dp"
-        android:layout_marginStart="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView9"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView9"
+        app:layout_constraintStart_toEndOf="@+id/textView20"
         app:layout_constraintTop_toTopOf="@+id/textView9" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/alert_proposta_dt_fim"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+    <EditText
+        android:id="@+id/txtDtFim"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/alert_proposta_hint_data"
+        android:inputType="number"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView20"
+        app:layout_constraintTop_toTopOf="@+id/textView20" />
 
     <TextView
         android:id="@+id/textView10"
@@ -100,7 +123,7 @@
         android:text="@string/alert_proposta_valor"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
     <EditText
         android:id="@+id/txtValor"
@@ -108,7 +131,7 @@
         android:layout_height="wrap_content"
         android:hint="0000,00"
         android:inputType="number"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginStart="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView10"
         app:layout_constraintEnd_toEndOf="parent"
@@ -127,7 +150,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/spinnerFormaPag"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"

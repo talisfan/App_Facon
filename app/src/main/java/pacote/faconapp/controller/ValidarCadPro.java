@@ -85,13 +85,16 @@ public class ValidarCadPro {
             throw new Exception(dateInvalidException);
         }
 
+        String mesAtual = dataAtual.substring(3, 5);
+        int mesAt = Integer.valueOf(mesAtual);
+
+        String anoAtual = dataAtual.substring(6);
+        int anoAt = Integer.valueOf(anoAtual);
+
         for(int i=0; i<2; i++) {
             //MES
             String mes = (i==0) ? dtInicio.substring(0, 2) : dtFim.substring(0, 2);
             int mesIn = Integer.valueOf(mes);
-
-            String mesAtual = dataAtual.substring(3, 5);
-            int mesAt = Integer.valueOf(mesAtual);
 
             if (mesIn > 12 || mesIn < 1) {
                 throw new Exception(dateInvalidException);
@@ -101,8 +104,6 @@ public class ValidarCadPro {
             String ano = dtInicio.substring(3);
             int anoIn = Integer.valueOf(ano);
 
-            String anoAtual = dataAtual.substring(6);
-            int anoAt = Integer.valueOf(anoAtual);
             int formMaxValida = anoAt - 50;
 
             if (anoIn > anoAt || anoIn < formMaxValida) {
