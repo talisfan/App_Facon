@@ -8,6 +8,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface CrudProposta {
 
@@ -17,8 +18,8 @@ public interface CrudProposta {
 
     // resgata proposta
     @FormUrlEncoded
-    @GET("/proposta")
-    Call<Proposta> getProposta(@Field("token") String token);
+    @GET("/proposta?token={token}&idFb={idFb}")
+    Call<Proposta> getProposta(@Path("token") String token, @Path("idFb") String idFbUserLogado);
 
     // atualiza proposta
     @FormUrlEncoded

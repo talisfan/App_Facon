@@ -22,7 +22,7 @@ exports.getUsers = (req, res, next) => {
               msg: "Error 500. " + error,
             });
           }
-
+          
           return res.status(200).send(result);
         }
       );

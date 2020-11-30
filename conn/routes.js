@@ -4,6 +4,7 @@ const router = express.Router();
 const modelUsers = require('./models/ModelUsers');
 const modelProfessionals = require('./models/ModelProfessionals');
 const modelAdm = require('./models/ModelAdm');
+const modelProposta = require('./models/ModelProposta');
 
 //////ROTAS//////
 
@@ -20,6 +21,11 @@ router.put('/professionals/attDescricao', modelProfessionals.attDescricao);
 router.put('/professionals/attFormacao', modelProfessionals.attFormacao);
 router.put('/professionals/attContato', modelProfessionals.attContato);
 router.put('/professionals/attEndereco', modelProfessionals.attEndereco);
+
+// Model Propostas
+router.get('/proposta', modelProposta.getProposta);
+router.post('/proposta', modelProposta.criarProposta);
+router.put('/proposta', modelProposta.updateProposta);
 
 // Model ADM
 router.get('/users', modelAdm.getUsers);

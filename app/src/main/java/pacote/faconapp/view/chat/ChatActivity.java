@@ -231,7 +231,7 @@ public class ChatActivity extends AppCompatActivity {
                     if(txtMsg.getText().toString().contains("pRop201s")){
 
                         String token = txtMsg.getText().toString().replace(msgProposta, "");
-                        Call<Proposta> call = crudProposta.getProposta(token);
+                        Call<Proposta> call = crudProposta.getProposta(token, FirebaseAuth.getInstance().getUid());
                         call.enqueue(new Callback<Proposta>() {
                             @SuppressLint("ResourceAsColor")
                             @Override
@@ -421,9 +421,9 @@ public class ChatActivity extends AppCompatActivity {
                             }catch (Exception ex){
                                 throw new Exception("Erro ao converter valor do serviço.");
                             }
-                            Proposta proposta = new Proposta(user.getContato(), user.getUsername(), cli.getIdFb(), cli.getNome(),
-                                    "PENDENTE", txtDtInicio.getText().toString(), txtDtFim.getText().toString(), valor,
-                                    spinnerFormaPag.getSelectedItem().toString(),
+                            Proposta proposta = new Proposta(user.getContato(), user.getUsername(), FirebaseAuth.getInstance().getUid(),
+                                    cli.getNome(),"PENDENTE", txtDtInicio.getText().toString(),
+                                    txtDtFim.getText().toString(), valor, spinnerFormaPag.getSelectedItem().toString(),
                                     txtLocal.getText().toString(), txtDesc.getText().toString());
 
                             ValidarProposta validar = new ValidarProposta();
