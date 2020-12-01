@@ -47,13 +47,6 @@ formacao VARCHAR(400) NULL DEFAULT "Sem formação declarada.",
 dtExperiencia DATE NOT NULL
 );
 
-create table if not exists tbl_pagamento(
-id INTEGER PRIMARY KEY AUTO_INCREMENT,
-formaPagamento VARCHAR(100) NOT NULL,
-valorPagamento FLOAT NOT NULL,
-dataPagamento DATE NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS tbl_avaliacao(
 id integer primary key auto_increment, 
 idProfissional integer not null, 
@@ -61,16 +54,23 @@ idUsuario integer not null,
 estrelas int not null
 ); 
 
-CREATE TABLE IF NOT EXISTS tbl_status(
-id integer primary key auto_increment, 
-idCliente integer not null, 
-idProfissional integer not null, 
-idPagamento integer not null, 
-dataInicio DATE not null, 
-dataFim DATE null, 
-statusServico ENUM('CONCLUÍDO','ANDAMENTO','CANCELADO') not null, 
-termosContrato varchar(500) not null
-); 
+CREATE TABLE IF NOT EXISTS tbl_proposta(
+token VARCHAR(40) PRIMARY KEY NOT NULL,
+prestador VARCHAR(100) NOT NULL,
+idFbPrestador VARCHAR(100) NOT NULL,
+cliente VARCHAR(100) NOT NULL,
+idFbCliente VARCHAR(100) NOT NULL,
+statusProp ENUM("PENDENTE", "CONCLUÍDO", "RECUSADO", "ACEITO", "INACABADO") NOT NULL,
+dtInicio DATE NOT NULL,
+dtFim DATE NOT NULL,
+valor FLOAT NOT NULL,
+formaPag VARCHAR(30) NOT NULL,
+localServ VARCHAR(500) NOT NULL,
+descricao TEXT NOT NULL
+);
+
+#drop table tbl_proposta;
+select * from tbl_proposta;
 
 #--------------- CHAVES ESTRANGEIRAS ---------------#
 
@@ -81,17 +81,6 @@ FOREIGN KEY (idUsuario) REFERENCES tbl_usuario (id) on delete cascade;
 
 ALTER TABLE tbl_profissional ADD CONSTRAINT FK_idProfissao 
 FOREIGN KEY (idProfissao) REFERENCES tbl_tipoServico (id); 
-
-### tbl_status ###
-
-ALTER TABLE tbl_status ADD CONSTRAINT FK_idProfisionalStatus 
-FOREIGN KEY (idProfissional) REFERENCES tbl_profissional (idProfissional); 
-
-ALTER TABLE tbl_status ADD CONSTRAINT FK_idClienteStatus 
-FOREIGN KEY (idCliente) REFERENCES tbl_usuario (id); 
-
-ALTER TABLE tbl_status ADD CONSTRAINT FK_idPagamento 
-FOREIGN KEY (idPagamento) REFERENCES tbl_pagamento (id);
 
 ### tbl_avalicao ###
 
@@ -106,12 +95,6 @@ FOREIGN KEY (idUsuario) REFERENCES tbl_usuario (id);
 CREATE INDEX idx_users ON tbl_usuario(id);
 
 CREATE INDEX idx_profissoes ON tbl_tipoServico(id);
-
-#### TRIGGERS ####
-
-
-#### PROCEDURE ####
- 
  
 ############# INSERTS ##########
 INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, endRua, endBairro, endNum, senha, email, telCell, endCep, idFb, foto) VALUES 

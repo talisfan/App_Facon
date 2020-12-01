@@ -60,9 +60,7 @@ exports.criarProposta = (req, res, next) => {
 exports.getProposta = (req, res, next) => {
   let token = req.query.token;
   let idFb = req.query.idFb;
-
-  console.log(token, idFb);
-
+  
   mysql.getConnection((error, conn) => {
     if (error) {
       console.log(error);
@@ -78,35 +76,30 @@ exports.getProposta = (req, res, next) => {
 
         (error, result, field) => {
           conn.release();
-
-          if (error) {
-            console.log(error);
+          
+          if (error) {            
             return res.status(500).send({
               error: "true",
               msg: error.sqlMessage,
             });
           }
-
-          console.log(result);
+          
           if (result) {
-            if (
-              result[0].idFbCliente != idFb &&
-              result[0].idFbPrestador != idFb
-            ) {
+            if (result[0].idFbCliente != idFb && result[0].idFbPrestador != idFb) {
               return res.status(401).send({
                 error: "true",
                 msg: "Você não tem acesso há essa proposta.",
               });
             }
           }
-          if (result.length > 0) {
+          if (result.length < 0) {
             return res.status(200).send({
               error: "true",
               msg: "Proposta não encontrada",
             });
           }
 
-          return res.status(200).send(result);
+          return res.status(200).send(result[0]);
         }
       );
     }

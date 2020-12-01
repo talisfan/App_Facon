@@ -29,5 +29,6 @@ router.put('/proposta', modelProposta.updateProposta);
 
 // Model ADM
 router.get('/users', modelAdm.getUsers);
+router.get('/propostas', modelAdm.getPropostas);
 
 module.exports = router;

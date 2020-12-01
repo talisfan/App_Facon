@@ -15,12 +15,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -231,7 +233,7 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    if(txtMsg.getText().toString().contains("pRop201s")){
+                    if (txtMsg.getText().toString().contains("pRop201s")) {
 
                         String token = txtMsg.getText().toString().replace(msgProposta, "");
                         Call<Proposta> call = crudProposta.getProposta(token, FirebaseAuth.getInstance().getUid());
@@ -269,12 +271,12 @@ public class ChatActivity extends AppCompatActivity {
                                     // add formato moeda br
                                     txtValor.addTextChangedListener(new MoneyTextWatcher(txtValor));
 
-                                    lblPrestador.setText(proposta.getPrestador());
-                                    lblCliente.setText(proposta.getCliente());
+                                    lblPrestador.setText("Prestador: " + proposta.getPrestador());
+                                    lblCliente.setText("Cliente: " + proposta.getCliente());
 
                                     String status = proposta.getStatus();
                                     lblStatus.setText(status);
-                                    switch (status){
+                                    switch (status) {
                                         case "PENDENTE":
                                             lblStatus.setTextColor(R.color.yellow);
                                             break;
@@ -294,18 +296,24 @@ public class ChatActivity extends AppCompatActivity {
 
                                     txtDtInicio.setText(MetodosEstaticos.convertDateInForBr(proposta.getDtInicio()));
                                     txtDtFim.setText(MetodosEstaticos.convertDateInForBr(proposta.getDtFim()));
-                                    txtValor.setText(proposta.getValor().toString());
+                                    txtValor.setText(String.format("%.2f", (proposta.getValor())));
                                     txtLocal.setText(proposta.getLocal());
                                     txtDesc.setText(proposta.getDescricao());
-                                    String[] items = new String[]{ proposta.getFormaPag() };
+                                    String[] items = new String[]{proposta.getFormaPag()};
 
                                     ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, items);
                                     spinnerFormaPag.setAdapter(adapter);
 
                                     alertD.setView(vDialog);
-                                    alertD.setNegativeButton("CANCELAR", null);
 
-                                    if(cli.getIdProfissional() == 0 && status.equals("PENDENTE")) {
+                                    txtDtInicio.setEnabled(false);
+                                    txtDtFim.setEnabled(false);
+                                    txtValor.setEnabled(false);
+                                    txtLocal.setEnabled(false);
+                                    txtDesc.setEnabled(false);
+
+                                    if (proposta.getIdFbCliente().equals(FirebaseAuth.getInstance().getUid())
+                                            && status.equals("PENDENTE")) {
 
                                         alertD.setNeutralButton("RECUSAR", new Dialog.OnClickListener() {
                                             @Override
@@ -321,11 +329,12 @@ public class ChatActivity extends AppCompatActivity {
                                             }
                                         });
 
-                                    }else if(cli.getIdProfissional() == 0 && status.equals("ACEITO")) {
-                                        alertD.setNeutralButton("NÃO FEZ/TERMINOU", new Dialog.OnClickListener() {
+                                    } else if (proposta.getIdFbCliente().equals(FirebaseAuth.getInstance().getUid())
+                                            && status.equals("ACEITO")) {
+                                        alertD.setNeutralButton("INACABADO", new Dialog.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                atualizarProposta(proposta.getToken(), "NÃO FEZ/TERMINOU");
+                                                atualizarProposta(proposta.getToken(), "INACABADO");
                                             }
                                         });
                                         alertD.setPositiveButton("CONCLUÍDO", new Dialog.OnClickListener() {
@@ -334,13 +343,16 @@ public class ChatActivity extends AppCompatActivity {
                                                 atualizarProposta(proposta.getToken(), "CONCLUÍDO");
                                             }
                                         });
+
+                                    } else {
+                                        alertD.setPositiveButton("OK", null);
+                                        alertD.setNeutralButton(null, null);
                                     }
-                                    else{
-                                        alertD.setNegativeButton("OK", null);
-                                    }
+
+                                    alertD.setNegativeButton("VOLTAR", null);
                                     alertD.show();
 
-                                }catch (Exception ex){
+                                } catch (Exception ex) {
                                     MetodosEstaticos.toastMsg(context, ex.getMessage());
                                 }
                             }
@@ -424,10 +436,10 @@ public class ChatActivity extends AppCompatActivity {
                             String dataFim;
                             try {
                                 valor = Double.parseDouble(MoneyTextWatcher.formatPriceSave(txtValor.getText().toString()));
-                            }catch (Exception ex){
+                            } catch (Exception ex) {
                                 throw new Exception("Erro ao converter valor do serviço.");
                             }
-                            Proposta proposta = new Proposta( FirebaseAuth.getInstance().getUid(),
+                            Proposta proposta = new Proposta(FirebaseAuth.getInstance().getUid(),
                                     cli.getNome(), user.getContato(), user.getUsername(), "PENDENTE", txtDtInicio.getText().toString(),
                                     txtDtFim.getText().toString(), valor, spinnerFormaPag.getSelectedItem().toString(),
                                     txtLocal.getText().toString(), txtDesc.getText().toString());
@@ -439,7 +451,7 @@ public class ChatActivity extends AppCompatActivity {
                                 try {
                                     proposta.setDtInicio(MetodosEstaticos.convertDateBrForIn(txtDtInicio.getText().toString()));
                                     proposta.setDtFim(MetodosEstaticos.convertDateBrForIn(txtDtFim.getText().toString()));
-                                }catch (Exception ex){
+                                } catch (Exception ex) {
                                     throw new Exception("Erro na conversão de datas.");
                                 }
 
@@ -466,7 +478,7 @@ public class ChatActivity extends AppCompatActivity {
                                             MetodosEstaticos.toastMsg(context, "Proposta enviada com sucesso!");
                                             sendMessage(msgProposta + proposta.getToken());
 
-                                        }catch (Exception ex){
+                                        } catch (Exception ex) {
                                             MetodosEstaticos.toastMsg(context, ex.getMessage());
                                         }
                                     }
@@ -491,7 +503,7 @@ public class ChatActivity extends AppCompatActivity {
     //idetifica se proposta foi atualizada ou nao
     boolean flag = false;
 
-    public void atualizarProposta(String token, String status){
+    public void atualizarProposta(String token, String status) {
 
         Call<Proposta> call = crudProposta.updateProposta(token, status);
         call.enqueue(new Callback<Proposta>() {
@@ -506,9 +518,9 @@ public class ChatActivity extends AppCompatActivity {
                         throw new Exception(proposta.msg);
                     }
                     MetodosEstaticos.toastMsg(context, "Proposta atualizada com sucesso!");
-                    sendMessage(msgProposta + proposta.getToken());
+                    sendMessage(msgProposta + token);
 
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     MetodosEstaticos.toastMsg(context, ex.getMessage());
                 }
             }
