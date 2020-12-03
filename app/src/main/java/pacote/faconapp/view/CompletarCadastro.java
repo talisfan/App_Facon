@@ -99,26 +99,6 @@ public class CompletarCadastro extends AppCompatActivity {
     }
 
 
-//    public static ImageView convertBlobToImage(Context c, byte[] bytes) {
-//
-//        try { // Tenta converter o blob em uma imagem
-//            //alimenta a imageStream com o que tem no bytes
-//            ByteArrayInputStream imageStream = new ByteArrayInputStream(bytes);
-//
-//            //seta no bmp o stream carregado na linha de cima
-//            Bitmap bmp = BitmapFactory.decodeStream(imageStream);
-//
-//            ImageView img = new ImageView(c);
-//            img.setImageBitmap(bmp); // aqui seta a imagem no imageview
-//
-//            return img; // retorna a imagem
-//        } catch (Exception ex) {
-//            MetodosEstaticos.toastMsg(c, "Erro ao converter o arquivo binário para imagem. " + ex.getLocalizedMessage());
-//            return new ImageView(c); // Retorna a imagem do jeito que está
-//        }
-//    }
-
-
     public void selectPhoto(View v) {
         try {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -131,6 +111,7 @@ public class CompletarCadastro extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePictureIntent.setType("image/*");
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                         startActivityForResult(takePictureIntent, 1);
                     }

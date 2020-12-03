@@ -16,15 +16,24 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
+import pacote.faconapp.adapter.FotosServicosAdapter;
 import pacote.faconapp.constants.ClassesConstants;
 import pacote.faconapp.controller.ValidarCadPro;
+import pacote.faconapp.listener.OnClickFoto;
 import pacote.faconapp.listener.mask.Mascaras;
 import pacote.faconapp.model.data.ApiDb;
 import pacote.faconapp.model.dominio.crud.CrudPro;
 import pacote.faconapp.model.dominio.entidades.Cliente;
+import pacote.faconapp.model.dominio.entidades.FotosServicos;
 import pacote.faconapp.view.profissional.EscolhaCategoriaAtuacao;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,6 +65,9 @@ public class FragmentPerfilPro extends Fragment {
     private AlertDialog.Builder alertD;
     private Context context;
     private CrudPro crudPro;
+    private OnClickFoto listener;
+    private FotosServicosAdapter adapter;
+    private LinearLayoutManager linearLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +79,28 @@ public class FragmentPerfilPro extends Fragment {
         context = getContext();
         alertD = new AlertDialog.Builder(context);
         crudPro = ApiDb.createService(CrudPro.class);
+        linearLayout = new LinearLayoutManager(context);
+        listener = new OnClickFoto() {
+            @Override
+            public void onClick(int idFoto, String url) {
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View vDialog = inflater.inflate(R.layout.row_fotos_servicos, null);
+
+                ImageView img = vDialog.findViewById(R.id.fotoServ);
+
+                if(url != null) {
+                    Picasso.get()
+                            .load(url)
+                            .into(img);
+                }
+
+                alertD.setView(vDialog);
+                alertD.setPositiveButton("OK", null);
+                alertD.setNegativeButton("EXCLUIR", null);
+                alertD.show();
+            }
+        };
     }
 
     @Override
@@ -78,7 +112,7 @@ public class FragmentPerfilPro extends Fragment {
             if (cli == null) {
                 throw new Exception("Erro ao receber informações do usuário.");
             }
-
+            mViewHolder.recyclerView = v.findViewById(R.id.recyclerFotos);
             mViewHolder.nome = v.findViewById(R.id.nome);
             mViewHolder.estrelas = v.findViewById(R.id.avPerfilPro);
             mViewHolder.qntAv = v.findViewById(R.id.qntAvPerfilPro);
@@ -172,7 +206,23 @@ public class FragmentPerfilPro extends Fragment {
                         alertD.show();
                     }
                 });
-            } else {
+
+                Call<List<FotosServicos>> call = crudPro.getFotosServices(cli.getIdProfissional());
+                call.enqueue(new Callback<List<FotosServicos>>() {
+                    @Override
+                    public void onResponse(Call<List<FotosServicos>> call, Response<List<FotosServicos>> response) {
+                        List<FotosServicos> listFotos = response.body();
+                        setListFotos(listFotos);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<FotosServicos>> call, Throwable t) {
+                        MetodosEstaticos.toastMsg(context, "Não foi possível resgatar fotos dos serviços concluídos...\n" + t.getMessage());
+                    }
+                });
+
+            } // se não for profissional...
+            else {
                 v.findViewById(R.id.infosPro).setVisibility(View.GONE);
                 v.findViewById(R.id.noPro).setVisibility(View.VISIBLE);
                 v.findViewById(R.id.btnCadPro).setOnClickListener(new View.OnClickListener() {
@@ -288,6 +338,12 @@ public class FragmentPerfilPro extends Fragment {
         });
     }
 
+    public void setListFotos(List<FotosServicos> list){
+        adapter = new FotosServicosAdapter(list, listener);
+        mViewHolder.recyclerView.setAdapter(adapter);
+        mViewHolder.recyclerView.setLayoutManager(linearLayout);
+    }
+
     private static class ViewHolder {
         TextView nome;
         TextView exp;
@@ -300,5 +356,6 @@ public class FragmentPerfilPro extends Fragment {
         EditText txtDescricao;
         EditText txtFormacao;
         ImageView estrelas;
+        RecyclerView recyclerView;
     }
 }

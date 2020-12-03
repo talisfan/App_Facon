@@ -115,7 +115,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/border_black_back_gray"
                     android:enabled="false"
-                    android:inputType="textCapSentences"
+                    android:inputType="textMultiLine"
                     android:maxLength="400"
                     android:padding="3dp"
                     android:hint="Sem descrição..."
@@ -182,6 +182,22 @@
                     android:layout_below="@+id/lblFotosServ"
                     android:layout_marginTop="1dp"
                     android:foreground="@color/black" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/v"
+                    android:layout_alignBottom="@+id/vi2">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerFotos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible"
+                        android:orientation="horizontal" />
+
+                </LinearLayout>
 
                 <View
                     android:id="@+id/vi2"

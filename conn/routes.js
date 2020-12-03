@@ -13,14 +13,15 @@ router.post('/users/login', modelUsers.login);
 router.post('/users/registerUser', modelUsers.registerUser);
 router.post('/users/seekProfessionals', modelUsers.seekProfessionals);
 router.put('/users/completCad', modelUsers.completCad);
+router.put('/users/attContato', modelUsers.attContato);
+router.put('/users/attEndereco', modelUsers.attEndereco);
 
 // Model Professionals
 router.post('/professionals/seekProfessions', modelProfessionals.seekProfessions);
 router.post('/professionals/registerProfessional', modelProfessionals.registerProfessional);
 router.put('/professionals/attDescricao', modelProfessionals.attDescricao);
 router.put('/professionals/attFormacao', modelProfessionals.attFormacao);
-router.put('/professionals/attContato', modelProfessionals.attContato);
-router.put('/professionals/attEndereco', modelProfessionals.attEndereco);
+router.get('/professionals/fotos', modelProfessionals.getFotosServices);
 
 // Model Propostas
 router.get('/proposta', modelProposta.getProposta);

@@ -69,8 +69,15 @@ localServ VARCHAR(500) NOT NULL,
 descricao TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS tbl_fotosServices(
+idFoto INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,
+idUser INTEGER NOT NULL,
+url VARCHAR(500) NOT NULL
+);
+
 #drop table tbl_proposta;
 select * from tbl_proposta;
+
 
 #--------------- CHAVES ESTRANGEIRAS ---------------#
 
@@ -113,7 +120,7 @@ INSERT INTO tbl_usuario (id, nome, dtNascimento, rg, cpf, endCidade, endEstado, 
 (4, 'Luiz Luques', '2000-03-29', '381422402', '59677374677', 'Carapicuíba', 'SP', 'Rua Marconi', 'Vl Zette', '38', MD5('123456'), 'luiz@gmail.com', '11951104549',
 '06332190', '4G8kp12MIWdxJEU0pXv9hRHs7yV2', "https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/images%2FwillSmith.jpeg?alt=media&token=919bd79f-2bed-45a1-a20c-3d39463dea5f");
 
-SELECT * from tbl_usuario;
+#delete from tbl_usuario where email = 'talisson.luques007@gmail.com';
 
 INSERT INTO tbl_tipoServico (categoria, profissao) VALUES  
 ('Construção e Reparos', 'engenheiro civil'), 
@@ -251,6 +258,40 @@ INSERT INTO tbl_avaliacao (idProfissional, idUsuario, estrelas) VALUES
 (1, 1, 1);
 INSERT INTO tbl_avaliacao (idProfissional, idUsuario, estrelas) VALUES
 (1, 1, 5);
+
+## INSERINDO FOTOS DE SERVIÇOS
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(1, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2FRAWI-ARQUITETURA-DESIGN-02-2-1920x1100.jpg?alt=media&token=3029f620-7b76-49e1-950d-0d7d704a0148');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(1, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F91091-conteudo-avancado-realidade-virtual-na-arquitetura-como-ela-vem-sendo-usada-650x590.jpg?alt=media&token=e1b5531e-7455-430d-a76e-088a4db8aebb');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(1, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F6354b228f593c6b11773be5bdb5f3aa4.jpg?alt=media&token=db9920e9-6322-4c3d-ac60-10c4f93ef023');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(1, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F1904_Ap_EP_sala_R0png_Page12.jpg?alt=media&token=67eaa417-cf51-4c6b-a2b6-5b36f96d7c15');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(1, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F170612_Studio_AG_023_Ricardo_Bassetti_4036%20(1).jpg?alt=media&token=34cdcf83-6913-4c74-8f85-e51434f2777e');
+
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(2, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2FRAWI-ARQUITETURA-DESIGN-02-2-1920x1100.jpg?alt=media&token=3029f620-7b76-49e1-950d-0d7d704a0148');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(2, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F91091-conteudo-avancado-realidade-virtual-na-arquitetura-como-ela-vem-sendo-usada-650x590.jpg?alt=media&token=e1b5531e-7455-430d-a76e-088a4db8aebb');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(2, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F6354b228f593c6b11773be5bdb5f3aa4.jpg?alt=media&token=db9920e9-6322-4c3d-ac60-10c4f93ef023');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(2, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F1904_Ap_EP_sala_R0png_Page12.jpg?alt=media&token=67eaa417-cf51-4c6b-a2b6-5b36f96d7c15');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(2, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F170612_Studio_AG_023_Ricardo_Bassetti_4036%20(1).jpg?alt=media&token=34cdcf83-6913-4c74-8f85-e51434f2777e');
+
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(3, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2FRAWI-ARQUITETURA-DESIGN-02-2-1920x1100.jpg?alt=media&token=3029f620-7b76-49e1-950d-0d7d704a0148');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(3, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F91091-conteudo-avancado-realidade-virtual-na-arquitetura-como-ela-vem-sendo-usada-650x590.jpg?alt=media&token=e1b5531e-7455-430d-a76e-088a4db8aebb');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(3, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F6354b228f593c6b11773be5bdb5f3aa4.jpg?alt=media&token=db9920e9-6322-4c3d-ac60-10c4f93ef023');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(3, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F1904_Ap_EP_sala_R0png_Page12.jpg?alt=media&token=67eaa417-cf51-4c6b-a2b6-5b36f96d7c15');
+INSERT INTO tbl_fotosServices (idUser, url) VALUES 
+(3, 'https://firebasestorage.googleapis.com/v0/b/faconapp-etec.appspot.com/o/fotosServices%2F170612_Studio_AG_023_Ricardo_Bassetti_4036%20(1).jpg?alt=media&token=34cdcf83-6913-4c74-8f85-e51434f2777e');
 
 ## SELECTS
 

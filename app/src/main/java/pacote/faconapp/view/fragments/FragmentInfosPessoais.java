@@ -11,11 +11,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import pacote.faconapp.MetodosEstaticos;
@@ -29,6 +27,7 @@ import pacote.faconapp.listener.mask.Mascaras;
 import pacote.faconapp.model.data.ApiCep;
 import pacote.faconapp.model.data.ApiDb;
 import pacote.faconapp.model.dominio.crud.CrudPro;
+import pacote.faconapp.model.dominio.crud.CrudUser;
 import pacote.faconapp.model.dominio.crud.ServiceCep;
 import pacote.faconapp.model.dominio.entidades.Cep;
 import pacote.faconapp.model.dominio.entidades.Cliente;
@@ -61,7 +60,7 @@ public class FragmentInfosPessoais extends Fragment {
     private AlertDialog.Builder alertD;
     private ViewHolder mViewHolder= new ViewHolder();
     private Context context;
-    private CrudPro crudPro;
+    private CrudUser crudUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,7 @@ public class FragmentInfosPessoais extends Fragment {
         View view = inflater.inflate(R.layout.fragment_infos_pessoais, container, false);
         context = getContext();
         alertD = new AlertDialog.Builder(context);
-        crudPro = ApiDb.createService(CrudPro.class);
+        crudUser = ApiDb.createService(CrudUser.class);
 
         try {
             cli = (Cliente) getArguments().getSerializable(ClassesConstants.CLIENTE);
@@ -119,14 +118,13 @@ public class FragmentInfosPessoais extends Fragment {
                         .into(mViewHolder.foto);
             }
 
-            // eventos de click para editar informacoes pessoais
+            // eventos de click para editar informacoes de contato
             mViewHolder.editInfos.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View view) {
                     LayoutInflater inflater = requireActivity().getLayoutInflater();
                     View vDialog = inflater.inflate(R.layout.dialog_contato, null);
 
-                    final EditText txtEmail = vDialog.findViewById(R.id.txtEmail);
                     final EditText txtTelCell = vDialog.findViewById(R.id.txtTelCell);
                     final EditText txtTelFixo = vDialog.findViewById(R.id.txtTelFixo);
 
@@ -135,7 +133,6 @@ public class FragmentInfosPessoais extends Fragment {
                     Mascaras maskTelFixo = new Mascaras("(##) ####-####", txtTelFixo);
                     txtTelFixo.addTextChangedListener(maskTelFixo);
 
-                    txtEmail.setText(cli.getEmail());
                     txtTelCell.setText(cli.getTelCell());
                     txtTelFixo.setText(cli.getTelFixo() == null ? "" : cli.getTelFixo());
 
@@ -146,7 +143,6 @@ public class FragmentInfosPessoais extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             try {
                                 Cliente c = new Cliente();
-                                c.setEmail(txtEmail.getText().toString());
                                 c.setTelCell(MetodosEstaticos.formatarDados(txtTelCell.getText().toString()));
                                 c.setTelFixo(MetodosEstaticos.formatarDados(txtTelFixo.getText().toString()));
                                 c.setId(cli.getId());
@@ -272,8 +268,7 @@ public class FragmentInfosPessoais extends Fragment {
     }
 
     public void editContato(final Cliente cliente){
-        Call<Cliente> call = crudPro.attContato(cliente.getEmail(), cliente.getTelCell(),
-                                                cliente.getTelFixo(), cliente.getId());
+        Call<Cliente> call = crudUser.attContato(cliente.getTelCell(), cliente.getTelFixo(), cliente.getId());
         call.enqueue(new Callback<Cliente>() {
             @Override
             public void onResponse(Call<Cliente> call, Response<Cliente> response) {
@@ -283,12 +278,9 @@ public class FragmentInfosPessoais extends Fragment {
                     if (c.error != null && c.error.equals("true")) {
                         throw new Exception(c.msg);
                     } else {
-                        cli.setEmail(cliente.getEmail());
                         cli.setTelCell(cliente.getTelCell());
-                        cli.setEmail(cliente.getEmail());
                         MetodosEstaticos.snackMsg(getView(), "Alterações salvas.");
 
-                        mViewHolder.email.setText("E-mail: " + cliente.getEmail());
                         mViewHolder.telCell.setText("Tel Cel: " + cliente.getTelCell());
                         if(cliente.getTelFixo() != null) {
                             cli.setTelFixo(cliente.getTelFixo());
@@ -314,7 +306,7 @@ public class FragmentInfosPessoais extends Fragment {
     }
 
     public void editEndereco(final Cliente cliente){
-        Call<Cliente> call = crudPro.attEndereco(
+        Call<Cliente> call = crudUser.attEndereco(
                 cliente.getEndCep(), cliente.getEnderecoRua(), cliente.getEnderecoNum(), cliente.getEnderecoCidade(),
                 cliente.getEnderecoEstado(), cliente.getEnderecoBairro(), cliente.getId()
         );

@@ -256,3 +256,99 @@ exports.seekProfessionals = (req, res, next) => {
     }
   });
 };
+
+exports.attContato = (req, res, next) => {
+  let dados = [    
+    (telCell = req.body.telCell),
+    (telFixo = req.body.telFixo),
+    (id = req.body.id),
+  ];
+
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      res.status(400).send({
+        error: "true",
+        msg: error,
+      });
+    } else {
+      conn.query(
+        "UPDATE tbl_usuario SET telCell = ?, telFixo = ? " +
+          "WHERE id = ?;",
+        dados,
+
+        (error, result, field) => {
+          conn.release();
+
+          if (error) {
+            return res.status(400).send({
+              error: "true",
+              msg: error,
+            });
+          }
+
+          if (result.changedRows == 0) {
+            return res.send({
+              error: "true",
+              msg: "Nenhum registro alterado.",
+            });
+          } else {
+            return res.status(200).send({
+              error: "false",
+              msg: "Success",
+            });
+          }
+        }
+      );
+    }
+  });
+};
+
+exports.attEndereco = (req, res, next) => {
+  let dados = [
+    (endRua = req.body.endRua),
+    (endCidade = req.body.endCidade),
+    (endEstado = req.body.endEstado),
+    (endBairro = req.body.endBairro),
+    (endNum = req.body.endNum),
+    (endCep = req.body.endCep),
+    (id = req.body.id),
+  ];
+
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      return res.status(400).send({
+        error: "true",
+        msg: error,
+      });
+    } else {
+      conn.query(
+        "UPDATE tbl_usuario SET endRua = ?, endCidade = ?, endEstado = ?, endBairro = ?, endNum = ?, endCep = ? " +
+          "WHERE id = ?;",
+        dados,
+
+        (error, result, field) => {
+          conn.release();
+
+          if (error) {
+            return res.status(400).send({
+              error: "true",
+              msg: error,
+            });
+          }
+
+          if (result.changedRows == 0) {
+            return res.send({
+              error: "true",
+              msg: "Nenhum registro alterado.",
+            });
+          } else {
+            return res.status(200).send({
+              error: "false",
+              msg: "Success",
+            });
+          }
+        }
+      );
+    }
+  });
+};

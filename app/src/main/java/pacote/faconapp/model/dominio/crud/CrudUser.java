@@ -26,4 +26,15 @@ public interface CrudUser {
 
     @PUT("users/completCad")
     Call<Cliente> completCad(@Body Cliente usuario);
+
+    @FormUrlEncoded
+    @PUT("/users/attContato")
+    Call<Cliente> attContato(@Field("telCell") String telCell, @Field("telFixo") String telFixo, @Field("id") int id);
+
+    @FormUrlEncoded
+    @PUT("/users/attEndereco")
+    Call<Cliente> attEndereco(@Field("endCep") String endCep, @Field("endRua") String endRua,
+                              @Field("endNum") String endNum, @Field("endCidade") String endCidade,
+                              @Field("endEstado") String endEstado, @Field("endBairro") String endBairro,
+                              @Field("id") int id);
 }
