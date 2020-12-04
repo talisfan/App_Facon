@@ -5,23 +5,39 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.UUID;
 
 import pacote.faconapp.MetodosEstaticos;
 import pacote.faconapp.R;
@@ -34,6 +50,8 @@ import pacote.faconapp.model.data.ApiDb;
 import pacote.faconapp.model.dominio.crud.CrudPro;
 import pacote.faconapp.model.dominio.entidades.Cliente;
 import pacote.faconapp.model.dominio.entidades.FotosServicos;
+import pacote.faconapp.model.dominio.entidades.chat.UserFireBase;
+import pacote.faconapp.view.EscolhaUser;
 import pacote.faconapp.view.profissional.EscolhaCategoriaAtuacao;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,17 +97,17 @@ public class FragmentPerfilPro extends Fragment {
         context = getContext();
         alertD = new AlertDialog.Builder(context);
         crudPro = ApiDb.createService(CrudPro.class);
-        linearLayout = new LinearLayoutManager(context);
+        linearLayout = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         listener = new OnClickFoto() {
             @Override
             public void onClick(int idFoto, String url) {
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View vDialog = inflater.inflate(R.layout.row_fotos_servicos, null);
+                View vDialog = inflater.inflate(R.layout.item_foto_maximzed, null);
 
-                ImageView img = vDialog.findViewById(R.id.fotoServ);
+                ImageView img = vDialog.findViewById(R.id.fotoMax);
 
-                if(url != null) {
+                if (url != null) {
                     Picasso.get()
                             .load(url)
                             .into(img);
@@ -97,10 +115,40 @@ public class FragmentPerfilPro extends Fragment {
 
                 alertD.setView(vDialog);
                 alertD.setPositiveButton("OK", null);
-                alertD.setNegativeButton("EXCLUIR", null);
+                alertD.setNeutralButton("EXCLUIR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteFoto(idFoto);
+                    }
+                });
                 alertD.show();
             }
         };
+    }
+
+    private void deleteFoto(int idFoto) {
+        Call<FotosServicos> call = crudPro.deleteFoto(idFoto);
+        call.enqueue(new Callback<FotosServicos>() {
+            @Override
+            public void onResponse(Call<FotosServicos> call, Response<FotosServicos> response) {
+                FotosServicos f = response.body();
+                if (f == null) {
+                    MetodosEstaticos.toastMsg(context, "Falha ao deletar foto. Tente novamente.");
+                    return;
+                }else if(f.error.equals("true")){
+                    MetodosEstaticos.toastMsg(context, f.msg);
+                }else {
+                    MetodosEstaticos.toastMsg(context, "Foto excluída com sucesso!");
+                    getFotos();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FotosServicos> call, Throwable t) {
+
+                MetodosEstaticos.toastMsg(context, "Falha ao deletar foto. Tente novamente.");
+            }
+        });
     }
 
     @Override
@@ -112,6 +160,8 @@ public class FragmentPerfilPro extends Fragment {
             if (cli == null) {
                 throw new Exception("Erro ao receber informações do usuário.");
             }
+
+            mViewHolder.lblSemFotos = v.findViewById(R.id.lblSemFotos);
             mViewHolder.recyclerView = v.findViewById(R.id.recyclerFotos);
             mViewHolder.nome = v.findViewById(R.id.nome);
             mViewHolder.estrelas = v.findViewById(R.id.avPerfilPro);
@@ -124,6 +174,7 @@ public class FragmentPerfilPro extends Fragment {
             mViewHolder.txtFormacao = v.findViewById(R.id.txtFormacao);
             mViewHolder.lblEditDesc = v.findViewById(R.id.lblEditDesc);
             mViewHolder.lblEditForm = v.findViewById(R.id.lblEditForm);
+            mViewHolder.btnAddFoto = v.findViewById(R.id.btnAddFotoS);
 
             if (cli.getIdProfissional() > 0) {
                 //seta as infos do profissional caso o id dele seja maior q 0; se for 0 pq não é profissional
@@ -138,7 +189,7 @@ public class FragmentPerfilPro extends Fragment {
                             mViewHolder.lblEditDesc.setText(R.string.lbl_salvar);
                         } else {
                             String descricao = mViewHolder.txtDescricao.getText().toString();
-                            if(MetodosEstaticos.isCampoVazio(descricao)){
+                            if (MetodosEstaticos.isCampoVazio(descricao)) {
                                 mViewHolder.txtDescricao.setText("Sem descrição...");
                             }
                             MetodosEstaticos.snackMsg(view, "Carregando...");
@@ -146,6 +197,13 @@ public class FragmentPerfilPro extends Fragment {
                             mViewHolder.txtDescricao.setEnabled(false);
                             editDescricao(descricao);
                         }
+                    }
+                });
+
+                mViewHolder.btnAddFoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addFoto();
                     }
                 });
 
@@ -207,19 +265,7 @@ public class FragmentPerfilPro extends Fragment {
                     }
                 });
 
-                Call<List<FotosServicos>> call = crudPro.getFotosServices(cli.getIdProfissional());
-                call.enqueue(new Callback<List<FotosServicos>>() {
-                    @Override
-                    public void onResponse(Call<List<FotosServicos>> call, Response<List<FotosServicos>> response) {
-                        List<FotosServicos> listFotos = response.body();
-                        setListFotos(listFotos);
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<FotosServicos>> call, Throwable t) {
-                        MetodosEstaticos.toastMsg(context, "Não foi possível resgatar fotos dos serviços concluídos...\n" + t.getMessage());
-                    }
-                });
+                getFotos();
 
             } // se não for profissional...
             else {
@@ -234,7 +280,7 @@ public class FragmentPerfilPro extends Fragment {
                     }
                 });
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             alertD.setTitle("Error");
             alertD.setMessage(ex.getMessage());
             alertD.setNegativeButton("OK", null);
@@ -242,6 +288,55 @@ public class FragmentPerfilPro extends Fragment {
         }
 
         return v;
+    }
+
+    int contador = 0;
+
+    private void getFotos() {
+        Call<List<FotosServicos>> call = crudPro.getFotosServices(cli.getIdProfissional());
+        call.enqueue(new Callback<List<FotosServicos>>() {
+            @Override
+            public void onResponse(Call<List<FotosServicos>> call, Response<List<FotosServicos>> response) {
+                List<FotosServicos> listFotos = response.body();
+                if (listFotos == null) {
+                    mViewHolder.lblSemFotos.setVisibility(View.VISIBLE);
+                    mViewHolder.recyclerView.setVisibility(View.GONE);
+                    return;
+                }
+                if (listFotos.size() == 1 && listFotos.get(0).error.equals("true")) {
+                    if (listFotos.get(0).msg.equals("vazio")) {
+                        mViewHolder.lblSemFotos.setVisibility(View.VISIBLE);
+                        mViewHolder.recyclerView.setVisibility(View.GONE);
+                        return;
+                    } else {
+                        MetodosEstaticos.toastMsg(context, listFotos.get(0).msg);
+                    }
+                } else {
+                    setListFotos(listFotos);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<FotosServicos>> call, Throwable t) {
+
+                if (contador <= 5) {
+                    Handler handler = new Handler();
+                    long delay = 4000;
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            MetodosEstaticos.toastMsg(context, "Não foi possível obter as fotos dos serviços concluídos...\nError: "
+                                    + t.getMessage() + "Tentando novamente...");
+                            contador++;
+                            getFotos();
+                        }
+                    }, delay);
+                }
+                if (contador > 5) {
+                    MetodosEstaticos.toastMsg(context, "Não foi possível obter as suas fotos no nosso banco de dados. Por favor tente mais tarde.");
+                }
+
+            }
+        });
     }
 
     public void setInfos() {
@@ -338,10 +433,69 @@ public class FragmentPerfilPro extends Fragment {
         });
     }
 
-    public void setListFotos(List<FotosServicos> list){
+    public void setListFotos(List<FotosServicos> list) {
         adapter = new FotosServicosAdapter(list, listener);
         mViewHolder.recyclerView.setAdapter(adapter);
         mViewHolder.recyclerView.setLayoutManager(linearLayout);
+    }
+
+    public void addFoto() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Uri mSelectedUri = data.getData();
+        savePhotoFb(mSelectedUri);
+    }
+
+    private void savePhotoFb(Uri mSelectedUri) {
+        // Save User Firebase
+        String filename = UUID.randomUUID().toString();
+        final StorageReference ref = FirebaseStorage.getInstance().getReference("/images/" + filename);
+        ref.putFile(mSelectedUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                FotosServicos foto = new FotosServicos();
+                                foto.setUrl(uri.toString());
+                                foto.setIdUser(cli.getIdProfissional());
+
+                                Call<FotosServicos> call = crudPro.insertFoto(foto);
+                                call.enqueue(new Callback<FotosServicos>() {
+                                    @Override
+                                    public void onResponse(Call<FotosServicos> call, Response<FotosServicos> response) {
+                                        //Sucesso na requisição (mesmo que retorno seja de erro. ex: 404)
+                                        FotosServicos f = response.body();
+                                        try {
+                                            if (f.error != null && f.error.equals("true")) {
+                                                throw new Exception(f.msg);
+                                            } else {
+                                                MetodosEstaticos.toastMsg(context, "Foto adicionada com sucesso!");
+                                                getFotos();
+                                            }
+                                        } catch (Exception ex) {
+                                            MetodosEstaticos.snackMsg(getView(), ex.getMessage());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<FotosServicos> call, Throwable t) {
+                                        //Falha na requisição
+                                        MetodosEstaticos.testConnectionFailed(t, context);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
     }
 
     private static class ViewHolder {
@@ -353,9 +507,11 @@ public class FragmentPerfilPro extends Fragment {
         TextView qntAv;
         TextView lblEditDesc;
         TextView lblEditForm;
+        TextView lblSemFotos;
         EditText txtDescricao;
         EditText txtFormacao;
         ImageView estrelas;
+        Button btnAddFoto;
         RecyclerView recyclerView;
     }
 }

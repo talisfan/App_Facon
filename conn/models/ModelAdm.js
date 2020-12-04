@@ -53,14 +53,14 @@ exports.getPropostas = (req, res, next) => {
             });
           }
                     
-          if (result.length < 0) {
+          if (result.length <= 0) {
             return res.status(200).send({
               error: "true",
               msg: "Nenhuma proposta encontrada",
             });
+          }else{
+            return res.status(200).send(result);
           }
-
-          return res.status(200).send(result);
         }
       );
     }

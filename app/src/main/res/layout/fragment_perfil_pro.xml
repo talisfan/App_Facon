@@ -8,12 +8,12 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -115,10 +115,10 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/border_black_back_gray"
                     android:enabled="false"
+                    android:hint="Sem descrição..."
                     android:inputType="textMultiLine"
                     android:maxLength="400"
                     android:padding="3dp"
-                    android:hint="Sem descrição..."
                     android:textSize="17sp" />
 
                 <TextView
@@ -151,8 +151,8 @@
                     android:layout_marginTop="1dp"
                     android:background="@drawable/border_black_back_gray"
                     android:enabled="false"
-                    android:padding="3dp"
                     android:hint="Sem formação declarada."
+                    android:padding="3dp"
                     android:textSize="17sp" />
 
                 <TextView
@@ -186,16 +186,28 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:orientation="horizontal"
                     android:layout_below="@+id/v"
-                    android:layout_alignBottom="@+id/vi2">
+                    android:layout_alignBottom="@+id/vi2"
+                    android:orientation="horizontal">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerFotos"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="visible"
-                        android:orientation="horizontal" />
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/lblSemFotos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@color/gray"
+                        android:gravity="center"
+                        android:text="SEM FOTOS"
+                        android:textAlignment="center"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -204,8 +216,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/v"
-                    android:layout_marginTop="100dp"
+                    android:layout_marginTop="150dp"
                     android:foreground="@color/black" />
+
+                <Button
+                    android:id="@+id/btnAddFotoS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/vi2"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="30dp"
+                    android:text="@string/add_foto_infosPro"/>
 
             </RelativeLayout>
 

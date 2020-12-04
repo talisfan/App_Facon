@@ -23,6 +23,13 @@ public interface CrudPro {
     @POST("/professionals/registerProfessional")
     Call<Cliente> resgisterProfessional(@Body Cliente professional);
 
+    @POST("/professionals/insertFoto")
+    Call<FotosServicos> insertFoto(@Body FotosServicos fotosServicos);
+
+    @FormUrlEncoded
+    @POST("/professionals/deleteFoto")
+    Call<FotosServicos> deleteFoto(@Field("idFoto") int idFoto);
+
     @FormUrlEncoded
     @PUT("/professionals/attDescricao")
     Call<Cliente> attDescricao(@Field("idProfissional") int idProfissional, @Field("descricao") String descricao);
@@ -33,4 +40,7 @@ public interface CrudPro {
 
     @GET("/professionals/fotos")
     Call<List<FotosServicos>> getFotosServices(@Query("idUser") int idUser);
+
+    @GET("/professionals/infosPro")
+    Call <Cliente> getInfosPro(@Query("idFb") String idFb);
 }

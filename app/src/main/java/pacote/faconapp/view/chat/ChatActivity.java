@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,6 +58,7 @@ import pacote.faconapp.model.dominio.entidades.chat.Contact;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.model.dominio.entidades.chat.Message;
 import pacote.faconapp.model.dominio.entidades.chat.UserFireBase;
+import pacote.faconapp.view.cliente.DetailsProfissional;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,7 +66,7 @@ import retrofit2.Response;
 public class ChatActivity extends AppCompatActivity {
 
     private GroupAdapter adapter;
-    private ContatosFb user;
+    private ContatosFb pro;
     private UserFireBase me;
     private String fromId;
     private String toId;
@@ -98,11 +100,11 @@ public class ChatActivity extends AppCompatActivity {
             alertD.setMessage(ex.getMessage());
         }
 
-        user = (ContatosFb) getIntent().getExtras().getSerializable(ClassesConstants.PROFISSIONAL);
+        pro = (ContatosFb) getIntent().getExtras().getSerializable(ClassesConstants.PROFISSIONAL);
         cli = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
 
         fromId = FirebaseAuth.getInstance().getUid();
-        toId = user.getContato();
+        toId = pro.getContato();
 
         RecyclerView rv = findViewById(R.id.recycler_chat);
         editChat = findViewById(R.id.edit_chat);
@@ -177,8 +179,8 @@ public class ChatActivity extends AppCompatActivity {
                         public void onSuccess(DocumentReference documentReference) {
                             Contact contact = new Contact();
                             contact.setContato(toId);
-                            contact.setUsername(user.getUsername());
-                            contact.setPhotoUrl(user.getProfileUrl());
+                            contact.setUsername(pro.getUsername());
+                            contact.setPhotoUrl(pro.getProfileUrl());
                             contact.setTimestamp(message.getTimestamp());
                             contact.setLastMessage(message.getText());
                             contact.setMe(true);
@@ -372,8 +374,19 @@ public class ChatActivity extends AppCompatActivity {
             Picasso.get()
                     .load(message.getFromId().equals(FirebaseAuth.getInstance().getUid())
                             ? me.getProfileUrl()
-                            : user.getProfileUrl())
+                            : pro.getProfileUrl())
                     .into(imgMessage);
+
+            if(!message.getFromId().equals(FirebaseAuth.getInstance().getUid())){
+                imgMessage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent it = new Intent(ChatActivity.this, DetailsProfissional.class);
+                        it.putExtra(ClassesConstants.PRO_FB, pro.getContato());
+                        startActivity(it);
+                    }
+                });
+            }
         }
 
         @Override
@@ -422,7 +435,7 @@ public class ChatActivity extends AppCompatActivity {
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, items);
                 spinnerFormaPag.setAdapter(adapter);
 
-                lblCliente.setText("Cliente: " + user.getUsername());
+                lblCliente.setText("Cliente: " + pro.getUsername());
                 lblPrestador.setText("Prestador: " + cli.getNome());
 
                 alertD.setView(vDialog);
@@ -440,7 +453,7 @@ public class ChatActivity extends AppCompatActivity {
                                 throw new Exception("Erro ao converter valor do serviço.");
                             }
                             Proposta proposta = new Proposta(FirebaseAuth.getInstance().getUid(),
-                                    cli.getNome(), user.getContato(), user.getUsername(), "PENDENTE", txtDtInicio.getText().toString(),
+                                    cli.getNome(), pro.getContato(), pro.getUsername(), "PENDENTE", txtDtInicio.getText().toString(),
                                     txtDtFim.getText().toString(), valor, spinnerFormaPag.getSelectedItem().toString(),
                                     txtLocal.getText().toString(), txtDesc.getText().toString());
 

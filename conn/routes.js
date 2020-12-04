@@ -19,9 +19,12 @@ router.put('/users/attEndereco', modelUsers.attEndereco);
 // Model Professionals
 router.post('/professionals/seekProfessions', modelProfessionals.seekProfessions);
 router.post('/professionals/registerProfessional', modelProfessionals.registerProfessional);
+router.post('/professionals/insertFoto', modelProfessionals.insertFoto);
+router.post('/professionals/deleteFoto', modelProfessionals.deleteFoto);
 router.put('/professionals/attDescricao', modelProfessionals.attDescricao);
 router.put('/professionals/attFormacao', modelProfessionals.attFormacao);
 router.get('/professionals/fotos', modelProfessionals.getFotosServices);
+router.get('/professionals/infosPro', modelProfessionals.getInfosPro);
 
 // Model Propostas
 router.get('/proposta', modelProposta.getProposta);
