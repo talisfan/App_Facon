@@ -71,10 +71,8 @@ public class DetailsProfissional extends AppCompatActivity {
     private OnClickFoto listener;
     private FotosServicosAdapter adapter;
     private LinearLayoutManager linearLayout;
-    private String idFbPro;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_profissional);
@@ -103,7 +101,6 @@ public class DetailsProfissional extends AppCompatActivity {
             crudPro = ApiDb.createService(CrudPro.class);
             profissionalDetails = (Cliente) getIntent().getSerializableExtra(ClassesConstants.PROFISSIONAL);
             cli = (Cliente) getIntent().getSerializableExtra(ClassesConstants.CLIENTE);
-            idFbPro = getIntent().getExtras().getString(ClassesConstants.PRO_FB);
 
             linearLayout = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
             listener = new OnClickFoto() {
@@ -127,12 +124,8 @@ public class DetailsProfissional extends AppCompatActivity {
                 }
             };
 
-            if (idFbPro != null && !idFbPro.equals("")) {
-                getInfosPro();
-            }
-            else{
-                setInfos();
-            }
+            setInfos();
+            getFotos();
 
         } catch (Exception ex) {
             alertD.setTitle("ERRO:");
@@ -141,94 +134,60 @@ public class DetailsProfissional extends AppCompatActivity {
         }
     }
 
-    private void getInfosPro() {
+    public void setInfos() {
+        try {
+            mViewHolder.nome.setText(profissionalDetails.getNome());
+            mViewHolder.exp.setText("Experiência: " + MetodosEstaticos.calcularExpPro(profissionalDetails.getExperiencia()) + " (anos.meses)");
+            mViewHolder.categoria.setText("Categoria: " + profissionalDetails.getCategoria());
+            mViewHolder.profissao.setText("Profissão: " + profissionalDetails.getProfissao());
+            mViewHolder.cidade.setText(profissionalDetails.getEnderecoCidade() + "/" + profissionalDetails.getEnderecoEstado());
+            mViewHolder.qntAv.setText("Média de " + profissionalDetails.getQntAv() + " avaliações.");
+            mViewHolder.descricao.setText(profissionalDetails.getDescricao());
+            mViewHolder.formacao.setText(profissionalDetails.getFormacao());
 
-        Call<Cliente> call = crudPro.getInfosPro(idFbPro);
-        call.enqueue(new Callback<Cliente>() {
-            @Override
-            public void onResponse(Call<Cliente> call, Response<Cliente> response) {
-                Cliente pro = response.body();
-
-                try {
-                    if (pro == null) {
-                        throw new Exception("Falha ao receber resposta do servidor.");
-                    }
-                    if (pro.error != null && pro.error.equals("true")) {
-                        throw new Exception(pro.msg);
-                    }
-                    //Convertendo data yyyy-mm-dd para dd/MM/yyyy
-//                    pro.setDataNascimento(MetodosEstaticos.convertDateInForBr(pro.getDataNascimento()));
-                    profissionalDetails = pro;
-                    setInfos();
-
-                } catch (Exception ex) {
-                    MetodosEstaticos.toastMsg(context, ex.getMessage());
-                }
+            if (profissionalDetails.getFoto() != null && !profissionalDetails.getFoto().equals("")) {
+                Picasso.get()
+                        .load(profissionalDetails.getFoto())
+                        .into(mViewHolder.fotoProfissional);
             }
 
-            @Override
-            public void onFailure(Call<Cliente> call, Throwable t) {
-                //Falha na requisição
-                MetodosEstaticos.testConnectionFailed(t, context);
-                Intent it = new Intent(DetailsProfissional.this, MainActivity.class);
-                it.putExtra(ClassesConstants.CLIENTE, cli);
-                startActivity(it);
-                DetailsProfissional.this.finish();
+            switch (profissionalDetails.getEstrelas()) {
+                case 1:
+                    mViewHolder.estrelas.setImageResource(R.drawable.stars_one);
+                    break;
+                case 2:
+                    mViewHolder.estrelas.setImageResource(R.drawable.stars_two);
+                    break;
+                case 3:
+                    mViewHolder.estrelas.setImageResource(R.drawable.stars_three);
+                    break;
+                case 4:
+                    mViewHolder.estrelas.setImageResource(R.drawable.stars_four);
+                    break;
+                case 5:
+                    mViewHolder.estrelas.setImageResource(R.drawable.stars_five);
+                    break;
+                default:
+                    mViewHolder.estrelas.setImageResource(R.drawable.stars_default);
+                    mViewHolder.qntAv.setVisibility(View.INVISIBLE);
+                    break;
             }
-        });
-    }
 
-    public void setInfos() throws Exception{
-        mViewHolder.nome.setText(profissionalDetails.getNome());
-        mViewHolder.exp.setText("Experiência: " + MetodosEstaticos.calcularExpPro(profissionalDetails.getExperiencia()) + " (anos.meses)");
-        mViewHolder.categoria.setText("Categoria: " + profissionalDetails.getCategoria());
-        mViewHolder.profissao.setText("Profissão: " + profissionalDetails.getProfissao());
-        mViewHolder.cidade.setText(profissionalDetails.getEnderecoCidade() + "/" + profissionalDetails.getEnderecoEstado());
-        mViewHolder.qntAv.setText("Média de " + profissionalDetails.getQntAv() + " avaliações.");
-        mViewHolder.descricao.setText(profissionalDetails.getDescricao());
-        mViewHolder.formacao.setText(profissionalDetails.getFormacao());
+            SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+            String dataAtual = date.format(Calendar.getInstance().getTime());
+            String anoAtual = dataAtual.substring(6);
+            int anoAt = Integer.valueOf(anoAtual);
 
-        if (profissionalDetails.getFoto() != null && !profissionalDetails.getFoto().equals("")) {
-            Picasso.get()
-                    .load(profissionalDetails.getFoto())
-                    .into(mViewHolder.fotoProfissional);
+            // dtNascimento = '2000-03-29T03:00:00.000Z'
+            String ano = profissionalDetails.getDataNascimento().substring(0, 4);
+            int anoDt = Integer.valueOf(ano);
+
+            int dtNascimento = anoAt - anoDt;
+            mViewHolder.idade.setText("Idade: " + dtNascimento + " anos.");
+
+        }catch (Exception ex){
+            MetodosEstaticos.toastMsg(context, ex.getMessage());
         }
-
-        switch (profissionalDetails.getEstrelas()) {
-            case 1:
-                mViewHolder.estrelas.setImageResource(R.drawable.stars_one);
-                break;
-            case 2:
-                mViewHolder.estrelas.setImageResource(R.drawable.stars_two);
-                break;
-            case 3:
-                mViewHolder.estrelas.setImageResource(R.drawable.stars_three);
-                break;
-            case 4:
-                mViewHolder.estrelas.setImageResource(R.drawable.stars_four);
-                break;
-            case 5:
-                mViewHolder.estrelas.setImageResource(R.drawable.stars_five);
-                break;
-            default:
-                mViewHolder.estrelas.setImageResource(R.drawable.stars_default);
-                mViewHolder.qntAv.setVisibility(View.INVISIBLE);
-                break;
-        }
-
-        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-        String dataAtual = date.format(Calendar.getInstance().getTime());
-        String anoAtual = dataAtual.substring(6);
-        int anoAt = Integer.valueOf(anoAtual);
-
-        // dtNascimento = '2000-03-29T03:00:00.000Z'
-        String ano = profissionalDetails.getDataNascimento().substring(0, 4);
-        int anoDt = Integer.valueOf(ano);
-
-        int dtNascimento = anoAt - anoDt;
-        mViewHolder.idade.setText("Idade: " + dtNascimento + " anos.");
-
-//        getFotos();
     }
 
     int contador = 0;

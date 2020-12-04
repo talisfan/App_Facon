@@ -50,6 +50,7 @@ import pacote.faconapp.constants.ExceptionsServer;
 import pacote.faconapp.controller.ValidarProposta;
 import pacote.faconapp.listener.mask.Mascaras;
 import pacote.faconapp.model.data.ApiDb;
+import pacote.faconapp.model.dominio.crud.CrudPro;
 import pacote.faconapp.model.dominio.crud.CrudProposta;
 import pacote.faconapp.model.dominio.crud.CrudUser;
 import pacote.faconapp.model.dominio.entidades.Cliente;
@@ -58,6 +59,7 @@ import pacote.faconapp.model.dominio.entidades.chat.Contact;
 import pacote.faconapp.model.dominio.entidades.chat.ContatosFb;
 import pacote.faconapp.model.dominio.entidades.chat.Message;
 import pacote.faconapp.model.dominio.entidades.chat.UserFireBase;
+import pacote.faconapp.view.MainActivity;
 import pacote.faconapp.view.cliente.DetailsProfissional;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,6 +77,7 @@ public class ChatActivity extends AppCompatActivity {
     private Cliente cli;
     private CrudProposta crudProposta;
     private AlertDialog.Builder alertD;
+    private CrudPro crudPro;
     String msgProposta = "Clique aqui para visualizar a proposta: ";
 
 
@@ -88,6 +91,7 @@ public class ChatActivity extends AppCompatActivity {
         context = this;
         alertD = new AlertDialog.Builder(context);
         crudProposta = ApiDb.createService(CrudProposta.class);
+        crudPro = ApiDb.createService(CrudPro.class);
 
         try {
             if (MetodosEstaticos.isConnected(this)) {
@@ -381,9 +385,36 @@ public class ChatActivity extends AppCompatActivity {
                 imgMessage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent it = new Intent(ChatActivity.this, DetailsProfissional.class);
-                        it.putExtra(ClassesConstants.PRO_FB, pro.getContato());
-                        startActivity(it);
+
+                            Call<Cliente> call = crudPro.getInfosPro(pro.getContato());
+                            call.enqueue(new Callback<Cliente>() {
+                                @Override
+                                public void onResponse(Call<Cliente> call, Response<Cliente> response) {
+                                    Cliente pro = response.body();
+
+                                    try {
+                                        if (pro == null) {
+                                            throw new Exception("Falha ao receber resposta do servidor.");
+                                        }
+                                        if (pro.error != null && pro.error.equals("true")) {
+                                            throw new Exception(pro.msg);
+                                        }
+
+                                        Intent it = new Intent(ChatActivity.this, DetailsProfissional.class);
+                                        it.putExtra(ClassesConstants.PROFISSIONAL, pro);
+                                        startActivity(it);
+
+                                    } catch (Exception ex) {
+                                        MetodosEstaticos.toastMsg(context, ex.getMessage());
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Cliente> call, Throwable t) {
+                                    //Falha na requisição
+                                    MetodosEstaticos.toastMsg(context, t.getMessage());
+                                }
+                            });
                     }
                 });
             }
